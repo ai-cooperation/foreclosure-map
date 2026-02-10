@@ -1,0 +1,17 @@
+# 環境
+.env
+
+# 快取 (本地保留，不上傳)
+scripts/cache/
+
+# 中間檔案
+data/raw/
+data/geocoded/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc

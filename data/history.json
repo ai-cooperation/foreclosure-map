@@ -1,0 +1,98 @@
+{
+  "ILD-111-司執-014340-3-C51": {
+    "first_seen": "2026-W06",
+    "last_seen": "2026-W06",
+    "status": "active",
+    "rounds": [
+      {
+        "week": "2026-W06",
+        "round": 3,
+        "price": 3810000
+      }
+    ]
+  },
+  "ILD-111-司執-021716-5-C51": {
+    "first_seen": "2026-W06",
+    "last_seen": "2026-W06",
+    "status": "active",
+    "rounds": [
+      {
+        "week": "2026-W06",
+        "round": 5,
+        "price": 206208000
+      }
+    ]
+  },
+  "ILD-112-司執-030203-3-C51": {
+    "first_seen": "2026-W06",
+    "last_seen": "2026-W06",
+    "status": "active",
+    "rounds": [
+      {
+        "week": "2026-W06",
+        "round": 3,
+        "price": 982000
+      }
+    ]
+  },
+  "ILD-112-司執-030203-3-C52": {
+    "first_seen": "2026-W06",
+    "last_seen": "2026-W06",
+    "status": "active",
+    "rounds": [
+      {
+        "week": "2026-W06",
+        "round": 3,
+        "price": 982000
+      }
+    ]
+  },
+  "ILD-113-司執-007375-3-C51": {
+    "first_seen": "2026-W06",
+    "last_seen": "2026-W06",
+    "status": "active",
+    "rounds": [
+      {
+        "week": "2026-W06",
+        "round": 3,
+        "price": 2731000
+      }
+    ]
+  },
+  "ILD-113-司執-007375-3-C52": {
+    "first_seen": "2026-W06",
+    "last_seen": "2026-W06",
+    "status": "active",
+    "rounds": [
+      {
+        "week": "2026-W06",
+        "round": 3,
+        "price": 2731000
+      }
+    ]
+  },
+  "ILD-113-司執-010550-4-C51": {
+    "first_seen": "2026-W06",
+    "last_seen": "2026-W06",
+    "status": "active",
+    "rounds": [
+      {
+        "week": "2026-W06",
+        "round": 4,
+        "price": 830000
+      }
+    ]
+  },
+  "ILD-113-司執-014013-1-C51": {
+    "first_seen": "2026-W06",
+    "last_seen": "2026-W06",
+    "status": "active",
+    "rounds": [
+      {
+        "week": "2026-W06",
+        "round": 1,
+        "price": 27000000
+      }
+    ]
+  }
+}

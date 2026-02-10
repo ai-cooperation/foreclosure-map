@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>法拍物件地圖</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+    <div id="sidebar">
+        <h1>法拍物件地圖</h1>
+        <div id="meta-info"></div>
+
+        <div class="filter-group">
+            <label>物件類型</label>
+            <select id="filter-type">
+                <option value="">全部</option>
+                <option value="building">房屋</option>
+                <option value="land">土地</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label>法院</label>
+            <select id="filter-court">
+                <option value="">全部</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label>縣市</label>
+            <select id="filter-county">
+                <option value="">全部</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label>拍別</label>
+            <select id="filter-round">
+                <option value="">全部</option>
+                <option value="1">1拍</option>
+                <option value="2">2拍</option>
+                <option value="3">3拍</option>
+                <option value="4">4拍</option>
+                <option value="5+">5拍以上</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label>點交</label>
+            <select id="filter-delivery">
+                <option value="">全部</option>
+                <option value="yes">點交</option>
+                <option value="no">不點交</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label>底價範圍 (萬元)</label>
+            <div class="price-range">
+                <input type="number" id="filter-price-min" placeholder="最低" min="0">
+                <span>~</span>
+                <input type="number" id="filter-price-max" placeholder="最高" min="0">
+            </div>
+        </div>
+
+        <button id="btn-filter" onclick="applyFilters()">篩選</button>
+        <button id="btn-reset" onclick="resetFilters()">清除</button>
+
+        <div id="stats"></div>
+    </div>
+
+    <div id="sidebar-toggle" onclick="toggleSidebar()">&#9776;</div>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
