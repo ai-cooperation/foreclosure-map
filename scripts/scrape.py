@@ -258,7 +258,7 @@ def scrape_court(page, court_code, court_name, prop_types=None):
             captured_responses = []
 
             def handle_response(response):
-                if "WHD1A02/QUERY.htm" in response.url:
+                if response.url.endswith("/QUERY.htm") and "WHD1A02" in response.url:
                     try:
                         body = response.json()
                         captured_responses.append(body)
@@ -298,12 +298,12 @@ def scrape_court(page, court_code, court_name, prop_types=None):
                 print(f"    第 {page_num} 頁: {len(items_data)} 筆")
 
                 # 檢查是否有下一頁
-                # API 回傳分頁資訊
-                ht = resp_data.get("ht", {})
-                total_count = ht.get("totalCount", 0)
-                page_size = ht.get("pageSize", 15)
+                # API 回傳分頁資訊在 pageInfo 欄位
+                page_info = resp_data.get("pageInfo", {})
+                total_count = page_info.get("totalNum", 0)
+                page_size = page_info.get("pageSize", 15)
 
-                if page_num * page_size >= total_count:
+                if total_count == 0 or page_num * page_size >= total_count:
                     break
 
                 # 翻頁: 在 v2 frame 中操作
