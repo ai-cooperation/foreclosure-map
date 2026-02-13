@@ -174,14 +174,11 @@ def parse_api_item(raw, court_code, court_name):
     else:
         vacant = "unknown"
 
-    # 公告 PDF 連結
+    # 公告 PDF 連結 (DO_VIEWPDF.htm 直接提供 PDF 下載)
     filenm = raw.get("filenm", "")
     detail_url = None
     if filenm:
-        crtid = raw.get("crtid", court_code)
-        para = raw.get("para", "")
-        if para:
-            detail_url = f"https://kpic.judicial.gov.tw/judkp/wkw/WHD1A02_DETAIL.htm?para={para}"
+        detail_url = f"https://aomp109.judicial.gov.tw/judbp/wkw/WHD1A02/DO_VIEWPDF.htm?filenm={filenm}"
 
     item = {
         "id": generate_item_id(court_code, crmyy, crmid, crmno, str(raw.get("saleno", "")), c5x),
