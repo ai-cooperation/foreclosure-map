@@ -118,6 +118,7 @@ def build_current(items, history, meta, current_week):
             "area": item.get("area"),
             "delivery": item.get("delivery", "unknown"),
             "vacant": item.get("vacant", "unknown"),
+            "rrange": item.get("rrange"),
             "detail_url": item.get("detail_url"),
             "coordinates": item.get("coordinates"),
             "history": {

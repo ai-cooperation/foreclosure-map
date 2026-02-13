@@ -90,6 +90,7 @@ function createPopup(f) {
             <tr><td>底價</td><td class="price">NT$ ${formatPrice(f.min_price)}</td></tr>
             <tr><td>拍別</td><td>${roundText}</td></tr>
             <tr><td>拍賣日</td><td>${f.auction_date || "-"}</td></tr>
+            <tr><td>權利範圍</td><td>${f.rrange || "-"}</td></tr>
             <tr><td>點交</td><td>${deliveryText}</td></tr>
             <tr><td>${vacantLabel}</td><td>${vacantText}</td></tr>
         </table>
@@ -170,6 +171,7 @@ function applyFilters() {
     const countyFilter = document.getElementById("filter-county").value;
     const roundFilter = document.getElementById("filter-round").value;
     const deliveryFilter = document.getElementById("filter-delivery").value;
+    const rrangeFilter = document.getElementById("filter-rrange").value;
     const priceMin = document.getElementById("filter-price-min").value;
     const priceMax = document.getElementById("filter-price-max").value;
 
@@ -178,6 +180,8 @@ function applyFilters() {
         if (courtFilter && f.court !== courtFilter) return false;
         if (countyFilter && f.county !== countyFilter) return false;
         if (deliveryFilter && f.delivery !== deliveryFilter) return false;
+        if (rrangeFilter === "full" && f.rrange !== "全部") return false;
+        if (rrangeFilter === "partial" && f.rrange === "全部") return false;
 
         if (roundFilter) {
             if (roundFilter === "5+") {
@@ -211,6 +215,7 @@ function resetFilters() {
     document.getElementById("filter-county").value = "";
     document.getElementById("filter-round").value = "";
     document.getElementById("filter-delivery").value = "";
+    document.getElementById("filter-rrange").value = "";
     document.getElementById("filter-price-min").value = "";
     document.getElementById("filter-price-max").value = "";
     displayFeatures(allFeatures);

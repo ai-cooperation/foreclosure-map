@@ -174,6 +174,9 @@ def parse_api_item(raw, court_code, court_name):
     else:
         vacant = "unknown"
 
+    # 權利範圍
+    rrange = raw.get("rrange", "").strip()
+
     # 公告 PDF 連結 (DO_VIEWPDF.htm 直接提供 PDF 下載)
     filenm = raw.get("filenm", "")
     detail_url = None
@@ -195,6 +198,7 @@ def parse_api_item(raw, court_code, court_name):
         "area": area,
         "delivery": delivery,
         "vacant": vacant,
+        "rrange": rrange or None,
         "detail_url": detail_url,
     }
 
