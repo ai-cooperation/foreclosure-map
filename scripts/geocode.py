@@ -142,21 +142,54 @@ def geocode_address_tgos(address, address_cache):
                 "oAPIKey": api_key,
                 "oAddress": address,
                 "oSRS": "EPSG:4326",
+                "oFuzzyType": "2",
+                "oFuzzyBuffer": "0",
                 "oResultDataType": "json",
-                "oFuzzyType": "0",
                 "oIsOnlyFullMatch": "false",
                 "oReturnMaxCount": "1",
+                "oIsSupportPast": "false",
+                "oIsShowCodeBase": "false",
+                "oIsLockCounty": "false",
+                "oIsLockTown": "false",
+                "oIsLockVillage": "false",
+                "oIsLockRoadSection": "false",
+                "oIsLockLane": "false",
+                "oIsLockAlley": "false",
+                "oIsLockArea": "false",
+                "oIsSameNumber_SubNumber": "true",
+                "oCanIgnoreVillage": "true",
+                "oCanIgnoreNeighborhood": "true",
             },
             timeout=15,
         )
         resp.raise_for_status()
-        data = resp.json()
+
+        # TGOS 回傳 XML 包裹 JSON: <?xml ...><string>JSON</string>
+        text = resp.text
+        if text.startswith("<?xml"):
+            import xml.etree.ElementTree as ET
+            root = ET.fromstring(text)
+            json_str = root.text
+            if not json_str or "錯誤" in json_str or "失敗" in json_str:
+                return None
+            data = json.loads(json_str)
+        else:
+            data = resp.json()
 
         addr_list = data.get("AddressList", [])
         if addr_list and len(addr_list) > 0:
+            lat_val = addr_list[0].get("Y")
+            lng_val = addr_list[0].get("X")
+            if lat_val and lng_val:
+                lat_f = float(lat_val)
+                lng_f = float(lng_val)
+                if lat_f == 0 or lng_f == 0:
+                    return None
+            else:
+                return None
             result = {
-                "lat": addr_list[0].get("Y"),
-                "lng": addr_list[0].get("X"),
+                "lat": lat_f,
+                "lng": lng_f,
                 "source": "tgos",
             }
 
