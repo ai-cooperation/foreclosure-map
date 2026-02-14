@@ -2,7 +2,7 @@
 """
 座標轉換模組
 - 土地物件: 地號 → twland.ronny.tw API → 經緯度 + 地籍邊界
-- 房屋物件: 地址 → TGOS / Google Geocoding → 經緯度
+- 房屋物件: 地址 → NLSC (免費免 key) → 經緯度
 """
 
 import argparse
@@ -11,6 +11,9 @@ import os
 import re
 import sys
 import time
+import urllib.parse
+import urllib.request
+import xml.etree.ElementTree as ET
 from datetime import datetime
 from pathlib import Path
 from urllib.parse import quote
@@ -24,8 +27,7 @@ ADDRESS_CACHE_FILE = CACHE_DIR / "address_cache.json"
 
 # API 設定
 TWLAND_API = "https://twland.ronny.tw/index/search"
-TGOS_API = "https://addr.tgos.tw/addrws/v40/QueryAddr.asmx/QueryAddr"
-GOOGLE_GEOCODING_API = "https://maps.googleapis.com/maps/api/geocode/json"
+NLSC_API = "https://api.nlsc.gov.tw/MapSearch/QuerySearch"
 
 
 def load_cache(cache_file):
@@ -112,9 +114,9 @@ def geocode_land(county, district, section, number, land_cache):
     return None
 
 
-def geocode_address_tgos(address, address_cache):
+def geocode_address_nlsc(address, address_cache):
     """
-    地址 → 座標 (TGOS)
+    地址 → 座標 (NLSC 國土測繪中心, 免費免 key, 門牌等級)
     回傳: {lat, lng, source} 或 None
     """
     cache_key = address
@@ -125,72 +127,47 @@ def geocode_address_tgos(address, address_cache):
         return {
             "lat": cached["lat"],
             "lng": cached["lng"],
-            "source": "tgos_cache",
+            "source": "nlsc_cache",
         }
 
-    app_id = os.environ.get("TGOS_APP_ID")
-    api_key = os.environ.get("TGOS_API_KEY")
-
-    if not app_id or not api_key:
-        return None
-
     try:
-        resp = requests.get(
-            TGOS_API,
-            params={
-                "oAPPId": app_id,
-                "oAPIKey": api_key,
-                "oAddress": address,
-                "oSRS": "EPSG:4326",
-                "oFuzzyType": "2",
-                "oFuzzyBuffer": "0",
-                "oResultDataType": "json",
-                "oIsOnlyFullMatch": "false",
-                "oReturnMaxCount": "1",
-                "oIsSupportPast": "true",
-                "oIsShowCodeBase": "false",
-                "oIsLockCounty": "true",
-                "oIsLockTown": "false",
-                "oIsLockVillage": "false",
-                "oIsLockRoadSection": "false",
-                "oIsLockLane": "false",
-                "oIsLockAlley": "false",
-                "oIsLockArea": "false",
-                "oIsSameNumber_SubNumber": "true",
-                "oCanIgnoreVillage": "true",
-                "oCanIgnoreNeighborhood": "true",
-            },
-            timeout=15,
+        # 雙重 URL encode (NLSC API 要求)
+        encoded = urllib.parse.quote(urllib.parse.quote(address))
+        data = f"word={encoded}&feedback=XML&center=121.000000,24.000000"
+
+        req = urllib.request.Request(
+            NLSC_API,
+            data=data.encode("utf-8"),
+            method="POST",
         )
-        resp.raise_for_status()
+        req.add_header("User-Agent", "Mozilla/5.0")
+        req.add_header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+        req.add_header("Referer", "https://maps.nlsc.gov.tw/")
 
-        # TGOS 回傳 XML 包裹 JSON: <?xml ...><string>JSON</string>
-        text = resp.text
-        if text.startswith("<?xml"):
-            import xml.etree.ElementTree as ET
-            root = ET.fromstring(text)
-            json_str = root.text
-            if not json_str or "錯誤" in json_str or "失敗" in json_str:
-                return None
-            data = json.loads(json_str)
-        else:
-            data = resp.json()
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            xml_str = resp.read().decode("utf-8")
 
-        addr_list = data.get("AddressList", [])
-        if addr_list and len(addr_list) > 0:
-            lat_val = addr_list[0].get("Y")
-            lng_val = addr_list[0].get("X")
-            if lat_val and lng_val:
-                lat_f = float(lat_val)
-                lng_f = float(lng_val)
-                if lat_f == 0 or lng_f == 0:
-                    return None
-            else:
-                return None
+        root = ET.fromstring(xml_str)
+        for item in root.findall("ITEM"):
+            remark_el = item.find("REMARK")
+            remark = remark_el.text if remark_el is not None else ""
+
+            # 只取門牌結果 (最精確)
+            if "門牌" not in remark:
+                continue
+
+            location = item.find("LOCATION").text
+            lon, lat = location.split(",")
+            lat_f = float(lat)
+            lng_f = float(lon)
+
+            if lat_f <= 0 or lng_f <= 0:
+                continue
+
             result = {
                 "lat": lat_f,
                 "lng": lng_f,
-                "source": "tgos",
+                "source": "nlsc",
             }
 
             # 寫入快取
@@ -202,46 +179,26 @@ def geocode_address_tgos(address, address_cache):
 
             return result
 
-    except Exception as e:
-        print(f"    [WARN] TGOS 查詢失敗 ({address}): {e}")
+        # 如果沒有門牌結果，接受任何有座標的結果
+        root = ET.fromstring(xml_str)
+        for item in root.findall("ITEM"):
+            location_el = item.find("LOCATION")
+            if location_el is None or not location_el.text:
+                continue
+            location = location_el.text
+            lon, lat = location.split(",")
+            lat_f = float(lat)
+            lng_f = float(lon)
 
-    return None
+            if lat_f <= 0 or lng_f <= 0:
+                continue
 
-
-def geocode_address_google(address, address_cache):
-    """
-    地址 → 座標 (Google Geocoding API, fallback)
-    回傳: {lat, lng, source} 或 None
-    """
-    api_key = os.environ.get("GOOGLE_GEOCODING_API_KEY")
-    if not api_key:
-        return None
-
-    cache_key = address
-
-    try:
-        resp = requests.get(
-            GOOGLE_GEOCODING_API,
-            params={
-                "address": address,
-                "key": api_key,
-                "language": "zh-TW",
-                "region": "tw",
-            },
-            timeout=15,
-        )
-        resp.raise_for_status()
-        data = resp.json()
-
-        if data.get("status") == "OK" and data.get("results"):
-            loc = data["results"][0]["geometry"]["location"]
             result = {
-                "lat": loc["lat"],
-                "lng": loc["lng"],
-                "source": "google",
+                "lat": lat_f,
+                "lng": lng_f,
+                "source": "nlsc",
             }
 
-            # 寫入快取
             address_cache[cache_key] = {
                 "lat": result["lat"],
                 "lng": result["lng"],
@@ -251,13 +208,17 @@ def geocode_address_google(address, address_cache):
             return result
 
     except Exception as e:
-        print(f"    [WARN] Google Geocoding 查詢失敗 ({address}): {e}")
+        print(f"    [WARN] NLSC 查詢失敗 ({address}): {e}")
 
     return None
 
 
 def geocode_item(item, land_cache, address_cache):
     """對單一物件進行座標轉換"""
+    # 如果已有司法院 API 提供的座標，跳過
+    if item.get("geocode_status") == "ok" and item.get("coordinates"):
+        return item
+
     item_type = item.get("type", "unknown")
     result = None
 
@@ -271,21 +232,14 @@ def geocode_item(item, land_cache, address_cache):
         result = geocode_land(county, district, section, number, land_cache)
 
     elif item_type == "building" and item.get("address"):
-        # 房屋: 地址 → TGOS → Google (fallback)
+        # 房屋: 地址 → NLSC (免費免 key)
         address = item["address"]
-
-        result = geocode_address_tgos(address, address_cache)
-        if not result:
-            result = geocode_address_google(address, address_cache)
+        result = geocode_address_nlsc(address, address_cache)
 
     elif item.get("location"):
         # 嘗試從 location 直接做地址查詢
         location = item["location"]
-
-        # 先嘗試地址查詢
-        result = geocode_address_tgos(location, address_cache)
-        if not result:
-            result = geocode_address_google(location, address_cache)
+        result = geocode_address_nlsc(location, address_cache)
 
     if result:
         item["coordinates"] = result
@@ -311,8 +265,8 @@ def main():
     parser.add_argument(
         "--delay",
         type=float,
-        default=0.5,
-        help="API 呼叫間隔 (秒, 預設: 0.5)",
+        default=0.3,
+        help="API 呼叫間隔 (秒, 預設: 0.3)",
     )
     args = parser.parse_args()
 
@@ -342,12 +296,24 @@ def main():
     address_cache = load_cache(ADDRESS_CACHE_FILE)
     print(f"快取: 土地 {len(land_cache)} 筆, 地址 {len(address_cache)} 筆")
 
+    # 統計已有座標 (司法院 API 提供)
+    pre_geocoded = sum(1 for item in items if item.get("geocode_status") == "ok" and item.get("coordinates"))
+    print(f"已有座標 (司法院 API): {pre_geocoded} 筆")
+
     # 逐筆轉換
     success = 0
     failed = 0
     cached = 0
+    skipped = 0
 
     for i, item in enumerate(items):
+        # 已有座標的跳過
+        if item.get("geocode_status") == "ok" and item.get("coordinates"):
+            skipped += 1
+            if (i + 1) % 200 == 0:
+                print(f"  進度: {i+1}/{len(items)} (API: {success}, 快取: {cached}, 跳過: {skipped}, 失敗: {failed})")
+            continue
+
         item = geocode_item(item, land_cache, address_cache)
 
         if item.get("geocode_status") == "ok":
@@ -362,7 +328,7 @@ def main():
 
         # 進度
         if (i + 1) % 50 == 0:
-            print(f"  進度: {i+1}/{len(items)} (成功: {success}, 快取: {cached}, 失敗: {failed})")
+            print(f"  進度: {i+1}/{len(items)} (API: {success}, 快取: {cached}, 跳過: {skipped}, 失敗: {failed})")
 
     # 儲存快取
     save_cache(LAND_CACHE_FILE, land_cache)
@@ -370,9 +336,10 @@ def main():
 
     # 更新 meta
     data["meta"]["geocoded_at"] = datetime.now().isoformat()
-    data["meta"]["geocode_success"] = success + cached
+    data["meta"]["geocode_success"] = success + cached + skipped
     data["meta"]["geocode_failed"] = failed
     data["meta"]["geocode_cached"] = cached
+    data["meta"]["geocode_pre"] = skipped
 
     # 統計
     land_count = sum(1 for item in items if item.get("type") == "land")
@@ -387,6 +354,7 @@ def main():
     print(f"\n座標轉換完成!")
     print(f"  成功 (API): {success}")
     print(f"  成功 (快取): {cached}")
+    print(f"  跳過 (已有): {skipped}")
     print(f"  失敗: {failed}")
     print(f"  土地: {land_count}, 房屋: {building_count}")
     print(f"  輸出: {output_path}")
