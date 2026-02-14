@@ -6,30 +6,62 @@ set -euo pipefail
 cd /home/ac-macmini2/foreclosure-map
 WEEK=$(date +%Y-W%W)
 LOG="/tmp/foreclosure-map-${WEEK}.log"
+STATUS_FILE="/tmp/foreclosure-map-status.json"
 
-log() { echo "[$(date '+%H:%M:%S')] $*" | tee -a "$LOG"; }
-
-log "=== 法拍地圖更新開始 ${WEEK} ==="
-
-# 載入環境變數 (SMTP, API keys)
+# 載入環境變數 (SMTP, API keys, TG_BOT_TOKEN, TG_CHAT_ID)
 if [ -f ~/.env ]; then
     source ~/.env
 fi
 
+log() { echo "[$(date '+%H:%M:%S')] $*" | tee -a "$LOG"; }
+
+tg_notify() {
+    local msg="$1"
+    if [ -n "${TG_BOT_TOKEN:-}" ] && [ -n "${TG_CHAT_ID:-}" ]; then
+        curl -s -X POST "https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage" \
+            -d chat_id="${TG_CHAT_ID}" \
+            -d parse_mode="HTML" \
+            -d text="${msg}" > /dev/null 2>&1 || true
+    fi
+}
+
+write_status() {
+    local status="$1" msg="$2"
+    python3 -c "
+import json
+from datetime import datetime
+d = {'status': '$status', 'message': '$msg', 'week': '$WEEK', 'updated_at': datetime.now().isoformat()}
+try:
+    meta = json.load(open('data/current.json'))['meta']
+    d['total'] = meta.get('total_count', 0)
+    d['geocoded'] = meta.get('geocode_success', 0)
+except: pass
+json.dump(d, open('$STATUS_FILE', 'w'))
+" 2>/dev/null || true
+}
+
+log "=== 法拍地圖更新開始 ${WEEK} ==="
+
 # Step 1: 爬取全台 22 法院
 log "Step 1: 爬取法拍公告..."
-python3 -u scripts/scrape.py --output "data/raw/${WEEK}.json" --delay 3 2>&1 | tee -a "$LOG"
-SCRAPE_EXIT=$?
-
-if [ $SCRAPE_EXIT -ne 0 ]; then
-    log "[ERROR] 爬取失敗 (exit $SCRAPE_EXIT)"
-    python3 scripts/notify.py --error "爬取失敗" 2>/dev/null || true
+if ! python3 -u scripts/scrape.py --output "data/raw/${WEEK}.json" --delay 3 2>&1 | tee -a "$LOG"; then
+    log "[ERROR] 爬取失敗"
+    write_status "error" "爬取失敗"
+    tg_notify "❌ <b>法拍地圖更新失敗</b>
+${WEEK} 爬取階段錯誤
+詳見: /tmp/foreclosure-map-${WEEK}.log"
     exit 1
 fi
 
 # Step 2: 座標轉換
 log "Step 2: 座標轉換..."
-python3 -u scripts/geocode.py --input "data/raw/${WEEK}.json" --output "data/geocoded/${WEEK}.json" 2>&1 | tee -a "$LOG"
+if ! python3 -u scripts/geocode.py --input "data/raw/${WEEK}.json" --output "data/geocoded/${WEEK}.json" 2>&1 | tee -a "$LOG"; then
+    log "[ERROR] 座標轉換失敗"
+    write_status "error" "座標轉換失敗"
+    tg_notify "❌ <b>法拍地圖更新失敗</b>
+${WEEK} 座標轉換階段錯誤"
+    exit 1
+fi
 
 # Step 3: 整合資料、產出 current.json
 log "Step 3: 資料整合..."
@@ -49,6 +81,15 @@ Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
 log "Step 5: 發送通知..."
 python3 scripts/notify.py 2>&1 | tee -a "$LOG" || true
 
-# 統計
+# 統計 & Telegram 通知
 TOTAL=$(python3 -c "import json; print(json.load(open('data/current.json'))['meta']['total_count'])" 2>/dev/null || echo "?")
+GEOCODED=$(python3 -c "import json; print(json.load(open('data/current.json'))['meta'].get('geocode_success', '?'))" 2>/dev/null || echo "?")
+
+write_status "ok" "更新完成"
+
+tg_notify "✅ <b>法拍地圖更新完成</b>
+📅 ${WEEK}
+📊 物件: ${TOTAL} 筆 (有座標: ${GEOCODED})
+🔗 https://ai-cooperation.github.io/foreclosure-map/"
+
 log "=== 更新完成! ${WEEK} 共 ${TOTAL} 筆物件 ==="
