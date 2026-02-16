@@ -7,6 +7,7 @@ cd /home/ac-macmini2/foreclosure-map
 WEEK=$(date +%Y-W%W)
 LOG="/tmp/foreclosure-map-${WEEK}.log"
 STATUS_FILE="/tmp/foreclosure-map-status.json"
+MIN_COUNT_RATIO=0.5  # 新資料至少要有上期 50% 的數量
 
 # 載入環境變數 (SMTP, API keys, TG_BOT_TOKEN, TG_CHAT_ID)
 if [ -f ~/.env ]; then
@@ -42,6 +43,10 @@ json.dump(d, open('$STATUS_FILE', 'w'))
 
 log "=== 法拍地圖更新開始 ${WEEK} ==="
 
+# 取得上期物件數 (用於最低數量驗證)
+PREV_COUNT=$(python3 -c "import json; print(json.load(open('data/current.json'))['meta']['total_count'])" 2>/dev/null || echo "0")
+log "上期物件數: ${PREV_COUNT}"
+
 # Step 1: 爬取全台 22 法院
 log "Step 1: 爬取法拍公告..."
 if ! python3 -u scripts/scrape.py --output "data/raw/${WEEK}.json" --delay 3 2>&1 | tee -a "$LOG"; then
@@ -52,6 +57,27 @@ ${WEEK} 爬取階段錯誤
 詳見: /tmp/foreclosure-map-${WEEK}.log"
     exit 1
 fi
+
+# Step 1.5: 最低數量驗證 — 防止異常資料覆蓋
+NEW_RAW_COUNT=$(python3 -c "import json; print(json.load(open('data/raw/${WEEK}.json'))['meta']['total_count'])" 2>/dev/null || echo "0")
+log "本期爬取數: ${NEW_RAW_COUNT} (上期: ${PREV_COUNT})"
+
+if [ "$PREV_COUNT" -gt 0 ] && [ "$NEW_RAW_COUNT" -gt 0 ]; then
+    MIN_REQUIRED=$(python3 -c "print(int(${PREV_COUNT} * ${MIN_COUNT_RATIO}))")
+    if [ "$NEW_RAW_COUNT" -lt "$MIN_REQUIRED" ]; then
+        log "[ERROR] 爬取數量異常: ${NEW_RAW_COUNT} < ${MIN_REQUIRED} (上期 ${PREV_COUNT} 的 50%)"
+        write_status "error" "爬取數量異常 ${NEW_RAW_COUNT}/${PREV_COUNT}"
+        tg_notify "⚠️ <b>法拍地圖更新中止</b>
+${WEEK} 爬取數量異常
+本期: ${NEW_RAW_COUNT} 筆 (上期: ${PREV_COUNT} 筆)
+低於安全門檻 (50%)，已保留上期資料
+詳見: /tmp/foreclosure-map-${WEEK}.log"
+        exit 1
+    fi
+fi
+
+FAILED_COURTS=$(python3 -c "import json; f=json.load(open('data/raw/${WEEK}.json'))['meta'].get('courts_failed',[]); print(','.join(f) if f else 'none')" 2>/dev/null || echo "?")
+log "失敗法院: ${FAILED_COURTS}"
 
 # Step 2: 座標轉換
 log "Step 2: 座標轉換..."
@@ -87,9 +113,15 @@ GEOCODED=$(python3 -c "import json; print(json.load(open('data/current.json'))['
 
 write_status "ok" "更新完成"
 
+FAIL_MSG=""
+if [ "$FAILED_COURTS" != "none" ] && [ "$FAILED_COURTS" != "?" ]; then
+    FAIL_MSG="
+⚠️ 失敗法院: ${FAILED_COURTS}"
+fi
+
 tg_notify "✅ <b>法拍地圖更新完成</b>
 📅 ${WEEK}
-📊 物件: ${TOTAL} 筆 (有座標: ${GEOCODED})
+📊 物件: ${TOTAL} 筆 (有座標: ${GEOCODED})${FAIL_MSG}
 🔗 https://ai-cooperation.github.io/foreclosure-map/"
 
 log "=== 更新完成! ${WEEK} 共 ${TOTAL} 筆物件 ==="

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-法拍公告爬蟲 - 從司法院法拍公告系統爬取法拍物件資料
+法拍公告爬蟲 v2 - 從司法院法拍公告系統爬取法拍物件資料
 透過攔截 AJAX API (WHD1A02/QUERY.htm) 回傳的 JSON 取得結構化資料
+使用 pageSize=999 一次取得全部資料，大幅提升效率
 """
 
 import argparse
@@ -14,7 +15,7 @@ from pathlib import Path
 
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeout
 
-# 22 個地方法院代碼 (從 debug 取得的實際 select option values)
+# 22 個地方法院代碼
 COURTS = {
     "TPD": "臺灣臺北地方法院",
     "PCD": "臺灣新北地方法院",
@@ -41,6 +42,9 @@ COURTS = {
 }
 
 BASE_URL = "https://aomp109.judicial.gov.tw/judbp/wkw/WHD1A02.htm"
+MAX_RETRIES = 3
+GOTO_TIMEOUT = 60000
+PAGE_SIZE = 999
 
 
 def generate_item_id(court_code, crmyy, crmid, crmno, saleno="", c5x=""):
@@ -126,7 +130,7 @@ def parse_api_item(raw, court_code, court_name):
             except ValueError:
                 pass
 
-    # 座標 (API 已提供!)
+    # 座標 (API 已提供)
     lat = raw.get("latitude")
     lng = raw.get("longitude")
     coordinates = None
@@ -177,7 +181,7 @@ def parse_api_item(raw, court_code, court_name):
     # 權利範圍
     rrange = raw.get("rrange", "").strip()
 
-    # 公告 PDF 連結 (DO_VIEWPDF.htm 直接提供 PDF 下載)
+    # 公告 PDF 連結
     filenm = raw.get("filenm", "")
     detail_url = None
     if filenm:
@@ -202,12 +206,10 @@ def parse_api_item(raw, court_code, court_name):
         "detail_url": detail_url,
     }
 
-    # 座標
     if coordinates:
         item["coordinates"] = coordinates
         item["geocode_status"] = "ok"
 
-    # 土地欄位
     if item_type == "land" and sec:
         full_section = sec + "段"
         if subsec:
@@ -215,132 +217,154 @@ def parse_api_item(raw, court_code, court_name):
         item["land_section"] = full_section
         item["land_no"] = landno
 
-    # 房屋欄位
     if item_type == "building" and budadd:
         item["address"] = budadd
 
     return item
 
 
-def scrape_court(page, court_code, court_name, prop_types=None):
-    """爬取單一法院的法拍公告，回傳物件列表"""
-    if prop_types is None:
-        prop_types = ["C51C52"]  # 房屋或土地 (一次取得全部)
+def scrape_court(page, court_code, court_name):
+    """爬取單一法院的法拍公告 (pageSize=999 一次取得全部)"""
 
-    all_items = []
-
-    for proptype in prop_types:
-        print(f"\n  爬取 {court_name} ({court_code}), 標的={proptype}")
+    for attempt in range(1, MAX_RETRIES + 1):
+        if attempt > 1:
+            print(f"\n  [重試 {attempt}/{MAX_RETRIES}] {court_name} ({court_code})")
+        else:
+            print(f"\n  爬取 {court_name} ({court_code})")
 
         try:
-            page.goto(BASE_URL, wait_until="load", timeout=30000)
-            page.wait_for_timeout(2000)
+            # Step 1: 開啟頁面
+            page.goto(BASE_URL, wait_until="load", timeout=GOTO_TIMEOUT)
+            page.wait_for_timeout(3000)
 
             v1 = page.frame("v1")
             if not v1:
                 print(f"    [ERROR] 找不到 v1 iframe")
-                continue
+                if attempt < MAX_RETRIES:
+                    wait = attempt * 10
+                    print(f"    等待 {wait} 秒後重試...")
+                    time.sleep(wait)
+                    continue
+                return []
 
-            v1.wait_for_selector("select", timeout=10000)
+            v1.wait_for_selector("select", timeout=15000)
 
-            # 選擇法院
+            # Step 2: 設定查詢條件
             v1.locator("select[name='court']").select_option(value=court_code)
             v1.wait_for_timeout(500)
-
-            # 選擇拍賣標的
-            v1.locator(f"input[name='proptype'][value='{proptype}']").click()
+            v1.locator("input[name='proptype'][value='C51C52']").click()
             v1.wait_for_timeout(300)
-
-            # 選擇一般程序
             v1.locator("input[name='saletype'][value='1']").click()
             v1.wait_for_timeout(300)
 
-            # 攔截 API response
-            captured_responses = []
+            # Step 3: 攔截 API，送出查詢
+            captured = []
 
             def handle_response(response):
                 if response.url.endswith("/QUERY.htm") and "WHD1A02" in response.url:
                     try:
-                        body = response.json()
-                        captured_responses.append(body)
+                        captured.append(response.json())
                     except Exception:
                         pass
 
             page.on("response", handle_response)
-
-            # 點擊查詢
             v1.evaluate("doSwitch()")
-            page.wait_for_timeout(5000)
+            page.wait_for_timeout(8000)
 
-            # 處理所有頁面
-            page_num = 1
-            total_this_type = 0
+            # Step 4: 第一次回應取得 totalNum，然後用 pageSize=999 重新查詢
+            if not captured:
+                print(f"    [ERROR] 無 API 回應")
+                page.remove_listener("response", handle_response)
+                if attempt < MAX_RETRIES:
+                    wait = attempt * 10
+                    print(f"    等待 {wait} 秒後重試...")
+                    time.sleep(wait)
+                    continue
+                return []
 
-            while True:
-                if not captured_responses:
-                    print(f"    第 {page_num} 頁: 無 API 回應")
-                    break
+            first_resp = captured[-1]
+            page_info = first_resp.get("pageInfo", {})
+            total = page_info.get("totalNum", 0)
 
-                resp_data = captured_responses[-1]
-                captured_responses.clear()
+            if total == 0:
+                print(f"    無資料")
+                page.remove_listener("response", handle_response)
+                return []
 
-                items_data = resp_data.get("data", [])
+            first_data = first_resp.get("data", [])
 
-                if not items_data:
-                    if page_num == 1:
-                        print(f"    無資料")
-                    break
+            # 如果第一次就拿到全部 (totalNum <= 15)，直接用
+            if len(first_data) >= total:
+                print(f"    一次取得 {len(first_data)} 筆 (全部)")
+                page.remove_listener("response", handle_response)
+                items = []
+                for raw in first_data:
+                    items.append(parse_api_item(raw, court_code, court_name))
+                return items
 
-                for raw in items_data:
-                    item = parse_api_item(raw, court_code, court_name)
-                    all_items.append(item)
-                    total_this_type += 1
+            # 需要用 pageSize=999 重新查詢
+            captured.clear()
 
-                print(f"    第 {page_num} 頁: {len(items_data)} 筆")
+            v2 = page.frame("v2")
+            if not v2:
+                print(f"    [ERROR] 找不到 v2 iframe")
+                page.remove_listener("response", handle_response)
+                if attempt < MAX_RETRIES:
+                    wait = attempt * 10
+                    print(f"    等待 {wait} 秒後重試...")
+                    time.sleep(wait)
+                    continue
+                return []
 
-                # 檢查是否有下一頁
-                # API 回傳分頁資訊在 pageInfo 欄位
-                page_info = resp_data.get("pageInfo", {})
-                total_count = page_info.get("totalNum", 0)
-                page_size = page_info.get("pageSize", 15)
-
-                if total_count == 0 or page_num * page_size >= total_count:
-                    break
-
-                # 翻頁: 在 v2 frame 中操作
-                v2 = page.frame("v2")
-                if v2:
-                    try:
-                        # 設定下一頁頁碼
-                        v2.evaluate(f"""
-                            document.querySelector('input[name=pageNum]').value = {page_num + 1};
-                            doPageQuery();
-                        """)
-                        page.wait_for_timeout(3000)
-                        page_num += 1
-                    except Exception as e:
-                        print(f"    翻頁失敗: {e}")
-                        break
-                else:
-                    break
-
-                if page_num > 100:
-                    print(f"    [WARN] 超過 100 頁，停止")
-                    break
-
+            v2.evaluate("""
+                document.querySelector('input[name=pageSize]').value = 999;
+                document.querySelector('input[name=pageNum]').value = 1;
+                doPageQuery();
+            """)
+            page.wait_for_timeout(15000)  # 大量資料需要多等
             page.remove_listener("response", handle_response)
-            print(f"    {proptype} 共 {total_this_type} 筆")
+
+            if not captured:
+                print(f"    [ERROR] pageSize=999 查詢無回應")
+                if attempt < MAX_RETRIES:
+                    wait = attempt * 10
+                    print(f"    等待 {wait} 秒後重試...")
+                    time.sleep(wait)
+                    continue
+                return []
+
+            resp_data = captured[-1]
+            all_data = resp_data.get("data", [])
+            actual_total = resp_data.get("pageInfo", {}).get("totalNum", 0)
+
+            print(f"    取得 {len(all_data)}/{actual_total} 筆 (pageSize=999)")
+
+            items = []
+            for raw in all_data:
+                items.append(parse_api_item(raw, court_code, court_name))
+            return items
 
         except PlaywrightTimeout as e:
             print(f"    [ERROR] 逾時: {e}")
+            if attempt < MAX_RETRIES:
+                wait = attempt * 10
+                print(f"    等待 {wait} 秒後重試...")
+                time.sleep(wait)
+                continue
         except Exception as e:
             print(f"    [ERROR] 爬取失敗: {e}")
+            if attempt < MAX_RETRIES:
+                wait = attempt * 10
+                print(f"    等待 {wait} 秒後重試...")
+                time.sleep(wait)
+                continue
 
-    return all_items
+    print(f"    [WARN] {court_name} 重試 {MAX_RETRIES} 次仍失敗")
+    return []
 
 
 def main():
-    parser = argparse.ArgumentParser(description="法拍公告爬蟲")
+    parser = argparse.ArgumentParser(description="法拍公告爬蟲 v2 (pageSize=999)")
     parser.add_argument("--output", "-o", default=None, help="輸出 JSON 檔案路徑")
     parser.add_argument("--courts", "-c", nargs="+", default=None, help="指定法院代碼 (e.g. ILD TPD)")
     parser.add_argument("--headless", action="store_true", default=True, help="無頭模式")
@@ -363,12 +387,13 @@ def main():
     else:
         target_courts = COURTS
 
-    print(f"法拍公告爬蟲啟動")
+    print(f"法拍公告爬蟲 v2 (pageSize=999)")
     print(f"目標法院: {len(target_courts)} 個")
     print(f"輸出: {output_path}")
     print(f"時間: {datetime.now().isoformat()}")
 
     all_results = []
+    failed_courts = []
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=args.headless)
@@ -381,6 +406,8 @@ def main():
             print(f"{'='*50}")
 
             items = scrape_court(page, court_code, court_name)
+            if not items:
+                failed_courts.append(court_code)
             all_results.extend(items)
 
             time.sleep(args.delay)
@@ -403,6 +430,8 @@ def main():
             "week": datetime.now().strftime("%Y-W%W"),
             "total_count": len(all_results),
             "courts_scraped": len(target_courts),
+            "courts_success": len(target_courts) - len(failed_courts),
+            "courts_failed": failed_courts,
             "courts_list": list(target_courts.keys()),
             "type_counts": type_counts,
             "pre_geocoded": geocoded,
@@ -419,6 +448,8 @@ def main():
     print(f"已有座標: {geocoded} 筆")
     for t, c in sorted(type_counts.items()):
         print(f"  {t}: {c}")
+    if failed_courts:
+        print(f"失敗法院 ({len(failed_courts)}): {', '.join(failed_courts)}")
     print(f"輸出: {output_path}")
 
 
