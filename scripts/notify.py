@@ -68,10 +68,10 @@ def main():
     total = stats.get("total_count", 0)
     type_counts = stats.get("type_counts", {})
     courts = stats.get("courts_scraped", 0)
-    geocoded = stats.get("pre_geocoded", 0)
+    geocoded = stats.get("geocode_success", stats.get("pre_geocoded", 0))
 
-    land_count = type_counts.get("land", 0)
-    building_count = type_counts.get("building", 0)
+    land_count = stats.get("land_count", type_counts.get("land", 0))
+    building_count = stats.get("building_count", type_counts.get("building", 0))
 
     subject = f"法拍物件地圖更新 {week} — 共 {total} 筆"
 
