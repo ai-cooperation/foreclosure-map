@@ -1,12 +1,12 @@
 {
   "meta": {
-    "generated_at": "2026-02-16T11:08:57.693470",
+    "generated_at": "2026-02-17T10:23:30.406200",
     "week": "2026-W07",
-    "total_count": 7618,
-    "land_count": 5506,
+    "total_count": 7624,
+    "land_count": 5512,
     "building_count": 2112,
     "courts_scraped": 22,
-    "geocode_success": 7618,
+    "geocode_success": 7624,
     "geocode_failed": 1474
   },
   "features": [
@@ -18843,7 +18843,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -19252,7 +19252,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -19287,7 +19287,7 @@
       "coordinates": {
         "lat": 24.953623,
         "lng": 121.473824,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -19321,7 +19321,7 @@
       "coordinates": {
         "lat": 24.953563,
         "lng": 121.474762,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -19985,7 +19985,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -20762,7 +20762,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -21191,7 +21191,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -21344,7 +21344,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -22637,7 +22637,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -23094,7 +23094,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -24035,7 +24035,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -24820,7 +24820,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -36588,7 +36588,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -36623,7 +36623,7 @@
       "coordinates": {
         "lat": 24.961581,
         "lng": 121.426456,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -36657,7 +36657,7 @@
       "coordinates": {
         "lat": 24.961581,
         "lng": 121.426456,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -128928,7 +128928,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -131080,7 +131080,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -131115,7 +131115,7 @@
       "coordinates": {
         "lat": 25.026539,
         "lng": 121.570932,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -133786,7 +133786,7 @@
       "coordinates": {
         "lat": 24.869765,
         "lng": 121.211448,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -135112,7 +135112,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -135147,7 +135147,7 @@
       "coordinates": {
         "lat": 24.97682,
         "lng": 121.273109,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -145303,7 +145303,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -145412,7 +145412,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -145501,7 +145501,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -145598,7 +145598,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -145779,7 +145779,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -217328,7 +217328,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -221243,7 +221243,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -309418,6 +309418,168 @@
       "land_no": "727"
     },
     {
+      "id": "NTD-114-司執-030886-1-C51",
+      "type": "land",
+      "court": "臺灣南投地方法院",
+      "court_code": "NTD",
+      "case_no": "114司執字第030886號",
+      "auction_date": "2026-03-19",
+      "auction_round": 1,
+      "location": "南投縣南投市樟普寮段 小段 971號",
+      "county": "南投縣",
+      "district": "南投市",
+      "min_price": 721500,
+      "area": 131.0,
+      "delivery": "no",
+      "vacant": "unknown",
+      "rrange": "6分之1",
+      "detail_url": "https://aomp109.judicial.gov.tw/judbp/wkw/WHD1A02/DO_VIEWPDF.htm?filenm=/ntd/11502/09165136095.002.pdf",
+      "coordinates": {
+        "lat": 23.929042060194497,
+        "lng": 120.63607582681499,
+        "polygon": [
+          [
+            [
+              [
+                120.63594130716,
+                23.929215513902
+              ],
+              [
+                120.63597948215,
+                23.929060787064
+              ],
+              [
+                120.63593615327,
+                23.929044633133
+              ],
+              [
+                120.6360085906,
+                23.928925196728
+              ],
+              [
+                120.63605722713,
+                23.928856446709
+              ],
+              [
+                120.63607755369,
+                23.928839407989
+              ],
+              [
+                120.63621550036,
+                23.928861481508
+              ],
+              [
+                120.63620063559,
+                23.928939631633
+              ],
+              [
+                120.63607556921,
+                23.928944513347
+              ],
+              [
+                120.63602342659,
+                23.929058302233
+              ],
+              [
+                120.63603595282,
+                23.929211595821
+              ],
+              [
+                120.63602684716,
+                23.9292447124
+              ],
+              [
+                120.63594130716,
+                23.929215513902
+              ]
+            ]
+          ]
+        ],
+        "source": "twland"
+      },
+      "history": {
+        "first_seen": "2026-W07",
+        "rounds": [
+          {
+            "week": "2026-W07",
+            "round": 1,
+            "price": 721500
+          }
+        ]
+      },
+      "land_section": "樟普寮段",
+      "land_no": "971"
+    },
+    {
+      "id": "NTD-114-司執-030886-1-C51",
+      "type": "land",
+      "court": "臺灣南投地方法院",
+      "court_code": "NTD",
+      "case_no": "114司執字第030886號",
+      "auction_date": "2026-03-19",
+      "auction_round": 1,
+      "location": "南投縣南投市樟普寮段 小段 972號",
+      "county": "南投縣",
+      "district": "南投市",
+      "min_price": 721500,
+      "area": 133.0,
+      "delivery": "no",
+      "vacant": "unknown",
+      "rrange": "6分之1",
+      "detail_url": "https://aomp109.judicial.gov.tw/judbp/wkw/WHD1A02/DO_VIEWPDF.htm?filenm=/ntd/11502/09165136095.002.pdf",
+      "coordinates": {
+        "lat": 23.9290853440545,
+        "lng": 120.63611203109,
+        "polygon": [
+          [
+            [
+              [
+                120.63603595282,
+                23.929211595821
+              ],
+              [
+                120.63602342659,
+                23.929058302233
+              ],
+              [
+                120.63607556921,
+                23.928944513347
+              ],
+              [
+                120.63620063559,
+                23.928939631633
+              ],
+              [
+                120.63617315049,
+                23.929099043892
+              ],
+              [
+                120.63616376776,
+                23.929231056476
+              ],
+              [
+                120.63603595282,
+                23.929211595821
+              ]
+            ]
+          ]
+        ],
+        "source": "twland"
+      },
+      "history": {
+        "first_seen": "2026-W07",
+        "rounds": [
+          {
+            "week": "2026-W07",
+            "round": 1,
+            "price": 721500
+          }
+        ]
+      },
+      "land_section": "樟普寮段",
+      "land_no": "972"
+    },
+    {
       "id": "NTD-114-司執-031854-1-C51",
       "type": "land",
       "court": "臺灣南投地方法院",
@@ -312249,6 +312411,394 @@
       "address": "中山路三段631巷9號"
     },
     {
+      "id": "NTD-114-司執-037148-1-C51",
+      "type": "land",
+      "court": "臺灣南投地方法院",
+      "court_code": "NTD",
+      "case_no": "114司執字第037148號",
+      "auction_date": "2026-03-19",
+      "auction_round": 1,
+      "location": "南投縣竹山鎮吉祥段 小段 84號",
+      "county": "南投縣",
+      "district": "竹山鎮",
+      "min_price": 355000,
+      "area": 5.0,
+      "delivery": "no",
+      "vacant": "unknown",
+      "rrange": "8分之1",
+      "detail_url": "https://aomp109.judicial.gov.tw/judbp/wkw/WHD1A02/DO_VIEWPDF.htm?filenm=/ntd/11502/10152038248.002.pdf",
+      "coordinates": {
+        "lat": 23.764593271276,
+        "lng": 120.696948342285,
+        "polygon": [
+          [
+            [
+              [
+                120.69689800197,
+                23.76458333823
+              ],
+              [
+                120.69691175282,
+                23.764565284531
+              ],
+              [
+                120.69692416421,
+                23.764576365412
+              ],
+              [
+                120.69697754521,
+                23.764594420734
+              ],
+              [
+                120.6969986826,
+                23.764621258021
+              ],
+              [
+                120.69689800197,
+                23.76458333823
+              ]
+            ]
+          ]
+        ],
+        "source": "twland"
+      },
+      "history": {
+        "first_seen": "2026-W07",
+        "rounds": [
+          {
+            "week": "2026-W07",
+            "round": 1,
+            "price": 355000
+          }
+        ]
+      },
+      "land_section": "吉祥段",
+      "land_no": "84"
+    },
+    {
+      "id": "NTD-114-司執-037148-1-C51",
+      "type": "land",
+      "court": "臺灣南投地方法院",
+      "court_code": "NTD",
+      "case_no": "114司執字第037148號",
+      "auction_date": "2026-03-19",
+      "auction_round": 1,
+      "location": "南投縣竹山鎮吉祥段 小段 89號",
+      "county": "南投縣",
+      "district": "竹山鎮",
+      "min_price": 355000,
+      "area": 23.0,
+      "delivery": "no",
+      "vacant": "unknown",
+      "rrange": "8分之1",
+      "detail_url": "https://aomp109.judicial.gov.tw/judbp/wkw/WHD1A02/DO_VIEWPDF.htm?filenm=/ntd/11502/10152038248.002.pdf",
+      "coordinates": {
+        "lat": 23.764793483085498,
+        "lng": 120.697085183855,
+        "polygon": [
+          [
+            [
+              [
+                120.69718664045,
+                23.764870463544
+              ],
+              [
+                120.69713951425,
+                23.764836681261
+              ],
+              [
+                120.69711069953,
+                23.76482947054
+              ],
+              [
+                120.69703405561,
+                23.764786915199
+              ],
+              [
+                120.69694113051,
+                23.764756555101
+              ],
+              [
+                120.69699125695,
+                23.76465428297
+              ],
+              [
+                120.69700636748,
+                23.764659385605
+              ],
+              [
+                120.69695880697,
+                23.764752167167
+              ],
+              [
+                120.697042988,
+                23.764774575419
+              ],
+              [
+                120.6970740158,
+                23.764802602784
+              ],
+              [
+                120.69709844267,
+                23.764812666597
+              ],
+              [
+                120.69714562064,
+                23.764824075781
+              ],
+              [
+                120.69720209447,
+                23.764849291315
+              ],
+              [
+                120.6972292372,
+                23.764907228703
+              ],
+              [
+                120.69720854404,
+                23.764932683201
+              ],
+              [
+                120.69718664045,
+                23.764870463544
+              ]
+            ]
+          ]
+        ],
+        "source": "twland"
+      },
+      "history": {
+        "first_seen": "2026-W07",
+        "rounds": [
+          {
+            "week": "2026-W07",
+            "round": 1,
+            "price": 355000
+          }
+        ]
+      },
+      "land_section": "吉祥段",
+      "land_no": "89"
+    },
+    {
+      "id": "NTD-114-司執-037148-1-C51",
+      "type": "land",
+      "court": "臺灣南投地方法院",
+      "court_code": "NTD",
+      "case_no": "114司執字第037148號",
+      "auction_date": "2026-03-19",
+      "auction_round": 1,
+      "location": "南投縣竹山鎮吉祥段 小段 98號",
+      "county": "南投縣",
+      "district": "竹山鎮",
+      "min_price": 355000,
+      "area": 33.0,
+      "delivery": "no",
+      "vacant": "unknown",
+      "rrange": "6分之1",
+      "detail_url": "https://aomp109.judicial.gov.tw/judbp/wkw/WHD1A02/DO_VIEWPDF.htm?filenm=/ntd/11502/10152038248.002.pdf",
+      "coordinates": {
+        "lat": 23.764967470673497,
+        "lng": 120.696905444035,
+        "polygon": [
+          [
+            [
+              [
+                120.69686126417,
+                23.765128938412
+              ],
+              [
+                120.69687844104,
+                23.765035186732
+              ],
+              [
+                120.69689862196,
+                23.764925831725
+              ],
+              [
+                120.69692209381,
+                23.764799052875
+              ],
+              [
+                120.6969496239,
+                23.764811724337
+              ],
+              [
+                120.69688979689,
+                23.765135888472
+              ],
+              [
+                120.69686126417,
+                23.765128938412
+              ]
+            ]
+          ]
+        ],
+        "source": "twland"
+      },
+      "history": {
+        "first_seen": "2026-W07",
+        "rounds": [
+          {
+            "week": "2026-W07",
+            "round": 1,
+            "price": 355000
+          }
+        ]
+      },
+      "land_section": "吉祥段",
+      "land_no": "98"
+    },
+    {
+      "id": "NTD-114-司執-037148-1-C51",
+      "type": "land",
+      "court": "臺灣南投地方法院",
+      "court_code": "NTD",
+      "case_no": "114司執字第037148號",
+      "auction_date": "2026-03-19",
+      "auction_round": 1,
+      "location": "南投縣竹山鎮吉祥段 小段 253號",
+      "county": "南投縣",
+      "district": "竹山鎮",
+      "min_price": 220000,
+      "area": 33.0,
+      "delivery": "no",
+      "vacant": "unknown",
+      "rrange": "8分之1",
+      "detail_url": "https://aomp109.judicial.gov.tw/judbp/wkw/WHD1A02/DO_VIEWPDF.htm?filenm=/ntd/11502/10152038248.002.pdf",
+      "coordinates": {
+        "lat": 23.7643076552075,
+        "lng": 120.696608222975,
+        "polygon": [
+          [
+            [
+              [
+                120.69688619025,
+                23.764557429765
+              ],
+              [
+                120.69683734719,
+                23.7645327494
+              ],
+              [
+                120.6967578453,
+                23.76450384638
+              ],
+              [
+                120.69671716653,
+                23.764493360376
+              ],
+              [
+                120.69669221061,
+                23.764467686244
+              ],
+              [
+                120.69666739814,
+                23.764441101853
+              ],
+              [
+                120.69660778861,
+                23.764366450772
+              ],
+              [
+                120.69656876616,
+                23.764312132091
+              ],
+              [
+                120.69654726917,
+                23.764257587673
+              ],
+              [
+                120.6964394233,
+                23.764140566797
+              ],
+              [
+                120.69637622558,
+                23.764089712635
+              ],
+              [
+                120.69630469313,
+                23.76403728114
+              ],
+              [
+                120.69631700112,
+                23.764031972185
+              ],
+              [
+                120.69638558348,
+                23.764076723344
+              ],
+              [
+                120.69645779216,
+                23.76414229389
+              ],
+              [
+                120.69655984355,
+                23.764259303372
+              ],
+              [
+                120.69658107779,
+                23.764305262201
+              ],
+              [
+                120.69663192094,
+                23.764381587076
+              ],
+              [
+                120.69667631516,
+                23.764435395981
+              ],
+              [
+                120.6967239823,
+                23.764479585614
+              ],
+              [
+                120.69675631599,
+                23.764492916924
+              ],
+              [
+                120.69678951123,
+                23.764500396462
+              ],
+              [
+                120.69684895278,
+                23.76452561795
+              ],
+              [
+                120.69689990584,
+                23.764554594987
+              ],
+              [
+                120.69691175282,
+                23.764565284531
+              ],
+              [
+                120.69689800197,
+                23.76458333823
+              ],
+              [
+                120.69688619025,
+                23.764557429765
+              ]
+            ]
+          ]
+        ],
+        "source": "twland"
+      },
+      "history": {
+        "first_seen": "2026-W07",
+        "rounds": [
+          {
+            "week": "2026-W07",
+            "round": 1,
+            "price": 355000
+          }
+        ]
+      },
+      "land_section": "吉祥段",
+      "land_no": "253"
+    },
+    {
       "id": "NTD-114-司執-038457-1-C51",
       "type": "land",
       "court": "臺灣南投地方法院",
@@ -312382,7 +312932,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -313412,7 +313962,7 @@
       "coordinates": {
         "lat": 23.969869,
         "lng": 120.595649,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -315565,7 +316115,7 @@
       "coordinates": {
         "lat": 24.073998,
         "lng": 120.532834,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -315599,7 +316149,7 @@
       "coordinates": {
         "lat": 24.072336,
         "lng": 120.541139,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -315633,7 +316183,7 @@
       "coordinates": {
         "lat": 24.073998,
         "lng": 120.532834,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -315667,7 +316217,7 @@
       "coordinates": {
         "lat": 24.073998,
         "lng": 120.532834,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -315701,7 +316251,7 @@
       "coordinates": {
         "lat": 24.073998,
         "lng": 120.532834,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -315735,7 +316285,7 @@
       "coordinates": {
         "lat": 24.073417,
         "lng": 120.537229,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -315905,7 +316455,7 @@
       "coordinates": {
         "lat": 24.073998,
         "lng": 120.532834,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -315939,7 +316489,7 @@
       "coordinates": {
         "lat": 24.073998,
         "lng": 120.532834,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -316334,7 +316884,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -316369,7 +316919,7 @@
       "coordinates": {
         "lat": 23.947966,
         "lng": 120.584084,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -320959,7 +321509,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -322709,7 +323259,7 @@
       "coordinates": {
         "lat": 23.913073,
         "lng": 120.58207,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -335431,7 +335981,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -335466,7 +336016,7 @@
       "coordinates": {
         "lat": 24.043976,
         "lng": 120.545552,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -336274,7 +336824,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -336503,7 +337053,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -336538,7 +337088,7 @@
       "coordinates": {
         "lat": 23.851588,
         "lng": 120.494333,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -336686,7 +337236,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -337434,7 +337984,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -337469,7 +338019,7 @@
       "coordinates": {
         "lat": 24.104367,
         "lng": 120.500128,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -339465,7 +340015,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -441591,7 +442141,7 @@
       "coordinates": {
         "lat": 22.990519,
         "lng": 120.212853,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -441625,7 +442175,7 @@
       "coordinates": {
         "lat": 22.990519,
         "lng": 120.212853,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -441659,7 +442209,7 @@
       "coordinates": {
         "lat": 22.990519,
         "lng": 120.212853,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -441693,7 +442243,7 @@
       "coordinates": {
         "lat": 22.990519,
         "lng": 120.212853,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -441727,7 +442277,7 @@
       "coordinates": {
         "lat": 22.990519,
         "lng": 120.212853,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -441761,7 +442311,7 @@
       "coordinates": {
         "lat": 22.990519,
         "lng": 120.212853,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -441795,7 +442345,7 @@
       "coordinates": {
         "lat": 22.990519,
         "lng": 120.212853,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -441829,7 +442379,7 @@
       "coordinates": {
         "lat": 22.990519,
         "lng": 120.212853,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -441863,7 +442413,7 @@
       "coordinates": {
         "lat": 22.990519,
         "lng": 120.212853,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -441897,7 +442447,7 @@
       "coordinates": {
         "lat": 22.990519,
         "lng": 120.212853,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -441931,7 +442481,7 @@
       "coordinates": {
         "lat": 22.990519,
         "lng": 120.212853,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -441965,7 +442515,7 @@
       "coordinates": {
         "lat": 22.990519,
         "lng": 120.212853,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -441999,7 +442549,7 @@
       "coordinates": {
         "lat": 22.980949,
         "lng": 120.230741,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -442033,7 +442583,7 @@
       "coordinates": {
         "lat": 22.980949,
         "lng": 120.230741,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -453688,7 +454238,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -486285,7 +486835,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -486320,7 +486870,7 @@
       "coordinates": {
         "lat": 22.663199,
         "lng": 120.307111,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -486594,7 +487144,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -486629,7 +487179,7 @@
       "coordinates": {
         "lat": 22.687731,
         "lng": 120.320469,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -519911,7 +520461,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -519972,7 +520522,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -520007,7 +520557,7 @@
       "coordinates": {
         "lat": 22.620732,
         "lng": 120.559116,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -526331,7 +526881,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -526396,7 +526946,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -526457,7 +527007,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -526526,7 +527076,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -526583,7 +527133,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -526648,7 +527198,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -526683,7 +527233,7 @@
       "coordinates": {
         "lat": 22.611533,
         "lng": 120.468883,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -527071,7 +527621,7 @@
       "coordinates": {
         "lat": 22.055179,
         "lng": 120.730876,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -529483,7 +530033,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -529544,7 +530094,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -531066,7 +531616,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -537951,7 +538501,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -537986,7 +538536,7 @@
       "coordinates": {
         "lat": 22.008951,
         "lng": 120.745626,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -540904,7 +541454,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -540969,7 +541519,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -543415,7 +543965,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -543484,7 +544034,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -544185,7 +544735,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -544318,7 +544868,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -544379,7 +544929,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -544472,7 +545022,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -544533,7 +545083,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -544568,7 +545118,7 @@
       "coordinates": {
         "lat": 22.375106,
         "lng": 120.595062,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -584090,7 +584640,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -584155,7 +584705,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -584280,7 +584830,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -584349,7 +584899,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -584384,7 +584934,7 @@
       "coordinates": {
         "lat": 24.6677,
         "lng": 121.682275,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -584418,7 +584968,7 @@
       "coordinates": {
         "lat": 24.6677,
         "lng": 121.682275,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -591592,7 +592142,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -591653,7 +592203,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -591688,7 +592238,7 @@
       "coordinates": {
         "lat": 24.577512,
         "lng": 121.869115,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -592062,7 +592612,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -592127,7 +592677,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -592192,7 +592742,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -592285,7 +592835,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -592590,7 +593140,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -592663,7 +593213,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -592874,7 +593424,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -592935,7 +593485,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -592996,7 +593546,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -594981,7 +595531,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -595038,7 +595588,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -595073,7 +595623,7 @@
       "coordinates": {
         "lat": 24.596355,
         "lng": 121.854705,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -597262,7 +597812,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -597327,7 +597877,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -597362,7 +597912,7 @@
       "coordinates": {
         "lat": 24.826626,
         "lng": 121.774401,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -597597,7 +598147,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -597686,7 +598236,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -597831,7 +598381,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -598723,7 +599273,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -598868,7 +599418,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -598941,7 +599491,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -599353,7 +599903,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -599388,7 +599938,7 @@
       "coordinates": {
         "lat": 24.726224,
         "lng": 121.766288,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -601389,7 +601939,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -601424,7 +601974,7 @@
       "coordinates": {
         "lat": 24.769612,
         "lng": 121.753599,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -602503,7 +603053,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -602592,7 +603142,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -657295,7 +657845,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -657368,7 +657918,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -657403,7 +657953,7 @@
       "coordinates": {
         "lat": 22.748306,
         "lng": 120.482096,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -661716,7 +662266,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -661751,7 +662301,7 @@
       "coordinates": {
         "lat": 23.56874,
         "lng": 119.576025,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -661785,7 +662335,7 @@
       "coordinates": {
         "lat": 25.05828,
         "lng": 121.588501,
-        "source": "nlsc"
+        "source": "nlsc_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -661845,7 +662395,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -661906,7 +662456,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -661967,7 +662517,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -662028,7 +662578,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -662089,7 +662639,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -662150,7 +662700,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -662211,7 +662761,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -662272,7 +662822,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -665565,7 +666115,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -665654,7 +666204,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -666271,7 +666821,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -666567,7 +667117,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -668116,7 +668666,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -668185,7 +668735,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -668274,7 +668824,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",
@@ -668335,7 +668885,7 @@
             ]
           ]
         ],
-        "source": "twland"
+        "source": "twland_cache"
       },
       "history": {
         "first_seen": "2026-W07",

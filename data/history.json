@@ -54490,5 +54490,29 @@
         "price": 513300
       }
     ]
+  },
+  "NTD-114-司執-030886-1-C51": {
+    "first_seen": "2026-W07",
+    "last_seen": "2026-W07",
+    "status": "active",
+    "rounds": [
+      {
+        "week": "2026-W07",
+        "round": 1,
+        "price": 721500
+      }
+    ]
+  },
+  "NTD-114-司執-037148-1-C51": {
+    "first_seen": "2026-W07",
+    "last_seen": "2026-W07",
+    "status": "active",
+    "rounds": [
+      {
+        "week": "2026-W07",
+        "round": 1,
+        "price": 355000
+      }
+    ]
   }
 }
