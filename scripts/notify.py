@@ -19,10 +19,14 @@ SITE_URL = "https://ai-cooperation.github.io/foreclosure-map/"
 
 
 def load_emails():
-    """從 notify-emails.txt 讀取 email 清單"""
+    """從環境變數 NOTIFY_EMAILS 或 notify-emails.txt 讀取 email 清單"""
+    import os
+    env_emails = os.environ.get("NOTIFY_EMAILS", "")
+    if env_emails:
+        return [e.strip() for e in env_emails.split(",") if e.strip()]
     emails = []
     if not EMAILS_FILE.exists():
-        print(f"[ERROR] 找不到 {EMAILS_FILE}")
+        print(f"[WARN] 未設定 NOTIFY_EMAILS 環境變數，也找不到 {EMAILS_FILE}")
         return emails
     for line in EMAILS_FILE.read_text().strip().splitlines():
         line = line.strip()

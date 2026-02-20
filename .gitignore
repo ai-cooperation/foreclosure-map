@@ -1,5 +1,6 @@
 # 環境
 .env
+notify-emails.txt
 
 # 快取 (本地保留，不上傳)
 scripts/cache/

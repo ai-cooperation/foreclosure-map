@@ -1,4 +1,0 @@
-# 法拍物件地圖 — 通知 Email 清單
-# 每行一個 email，# 開頭為註解
-alan.chen75@gmail.com
-aicooperation.tw@gmail.com
