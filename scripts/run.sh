@@ -9,6 +9,10 @@ LOG="/tmp/foreclosure-map-${WEEK}.log"
 STATUS_FILE="/tmp/foreclosure-map-status.json"
 MIN_COUNT_RATIO=0.5  # 新資料至少要有上期 50% 的數量
 
+# Pipeline 狀態追蹤 — 供 on_exit trap 使用
+PIPELINE_STATUS="ok"
+PIPELINE_ERROR=""
+
 # 載入環境變數 (SMTP, API keys, TG_BOT_TOKEN, TG_CHAT_ID)
 if [ -f ~/.env ]; then
     source ~/.env
@@ -41,6 +45,36 @@ json.dump(d, open('$STATUS_FILE', 'w'))
 " 2>/dev/null || true
 }
 
+# 失敗處理 — 設定狀態後讓 on_exit trap 發送通知
+pipeline_fail() {
+    local msg="$1"
+    PIPELINE_STATUS="error"
+    PIPELINE_ERROR="$msg"
+    log "[ERROR] ${msg}"
+    write_status "error" "$msg"
+    exit 1
+}
+
+# EXIT trap — 無論成功或失敗，一律發送 Telegram 通知
+on_exit() {
+    local exit_code=$?
+    # 如果 exit code 非零但 PIPELINE_STATUS 仍為 ok，表示 set -e 觸發的意外失敗
+    if [ $exit_code -ne 0 ] && [ "$PIPELINE_STATUS" = "ok" ]; then
+        PIPELINE_STATUS="error"
+        PIPELINE_ERROR="腳本異常中止 (exit code: $exit_code)"
+        log "[ERROR] ${PIPELINE_ERROR}"
+        write_status "error" "$PIPELINE_ERROR"
+    fi
+    log "Step 5: 發送通知 (status=${PIPELINE_STATUS})..."
+    if [ "$PIPELINE_STATUS" != "ok" ]; then
+        tg_notify "❌ <b>法拍地圖更新失敗</b>
+📅 ${WEEK}
+💥 ${PIPELINE_ERROR}
+📋 /tmp/foreclosure-map-${WEEK}.log"
+    fi
+}
+trap on_exit EXIT
+
 log "=== 法拍地圖更新開始 ${WEEK} ==="
 
 # 取得上期物件數 (用於最低數量驗證)
@@ -50,12 +84,10 @@ log "上期物件數: ${PREV_COUNT}"
 # Step 1: 爬取全台 22 法院
 log "Step 1: 爬取法拍公告..."
 if ! python3 -u scripts/scrape.py --output "data/raw/${WEEK}.json" --delay 3 2>&1 | tee -a "$LOG"; then
-    log "[ERROR] 爬取失敗"
-    write_status "error" "爬取失敗"
     tg_notify "❌ <b>法拍地圖更新失敗</b>
 ${WEEK} 爬取階段錯誤
 詳見: /tmp/foreclosure-map-${WEEK}.log"
-    exit 1
+    pipeline_fail "爬取失敗"
 fi
 
 # Step 1.5: 最低數量驗證 — 防止異常資料覆蓋
@@ -65,14 +97,12 @@ log "本期爬取數: ${NEW_RAW_COUNT} (上期: ${PREV_COUNT})"
 if [ "$PREV_COUNT" -gt 0 ] && [ "$NEW_RAW_COUNT" -gt 0 ]; then
     MIN_REQUIRED=$(python3 -c "print(int(${PREV_COUNT} * ${MIN_COUNT_RATIO}))")
     if [ "$NEW_RAW_COUNT" -lt "$MIN_REQUIRED" ]; then
-        log "[ERROR] 爬取數量異常: ${NEW_RAW_COUNT} < ${MIN_REQUIRED} (上期 ${PREV_COUNT} 的 50%)"
-        write_status "error" "爬取數量異常 ${NEW_RAW_COUNT}/${PREV_COUNT}"
         tg_notify "⚠️ <b>法拍地圖更新中止</b>
 ${WEEK} 爬取數量異常
 本期: ${NEW_RAW_COUNT} 筆 (上期: ${PREV_COUNT} 筆)
 低於安全門檻 (50%)，已保留上期資料
 詳見: /tmp/foreclosure-map-${WEEK}.log"
-        exit 1
+        pipeline_fail "爬取數量異常 ${NEW_RAW_COUNT}/${PREV_COUNT}"
     fi
 fi
 
@@ -82,11 +112,9 @@ log "失敗法院: ${FAILED_COURTS}"
 # Step 2: 座標轉換
 log "Step 2: 座標轉換..."
 if ! python3 -u scripts/geocode.py --input "data/raw/${WEEK}.json" --output "data/geocoded/${WEEK}.json" 2>&1 | tee -a "$LOG"; then
-    log "[ERROR] 座標轉換失敗"
-    write_status "error" "座標轉換失敗"
     tg_notify "❌ <b>法拍地圖更新失敗</b>
 ${WEEK} 座標轉換階段錯誤"
-    exit 1
+    pipeline_fail "座標轉換失敗"
 fi
 
 # Step 3: 整合資料、產出 current.json
@@ -100,12 +128,12 @@ git diff --cached --quiet && { log "無變更，跳過 commit"; } || {
     git commit -m "weekly update ${WEEK}
 
 Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
+    git pull --rebase origin main 2>&1 | tee -a "$LOG"
     git push origin main 2>&1 | tee -a "$LOG"
 }
 
-# Step 5: Email 通知
-log "Step 5: 發送通知..."
-python3 scripts/notify.py 2>&1 | tee -a "$LOG" || true
+# Step 5: Email 通知 — 由 on_exit trap 處理，此處設定成功狀態
+# (on_exit 會在腳本結束時自動執行，不需要手動呼叫 notify.py)
 
 # 統計 & Telegram 通知
 TOTAL=$(python3 -c "import json; print(json.load(open('data/current.json'))['meta']['total_count'])" 2>/dev/null || echo "?")

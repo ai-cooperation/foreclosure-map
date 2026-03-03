@@ -3,90 +3,499 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>法拍物件地圖</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
-    <link rel="stylesheet" href="css/style.css" />
+    <title>法拍地圖 — 全台法拍物件即時地圖查詢</title>
+    <meta name="description" content="免費查詢全台 22 間法院法拍屋、法拍土地、法拍物件。每週自動更新，地圖標示座標，支援篩選法院、縣市、拍別、底價範圍。">
+    <meta name="keywords" content="法拍地圖,法拍屋,法拍物件,法拍土地,法拍查詢,法拍房屋,法拍資訊,法院拍賣,不動產拍賣,法拍地土,台灣法拍">
+    <meta name="author" content="AI Cooperation">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://ai-cooperation.github.io/foreclosure-map/">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="法拍地圖 — 全台法拍物件即時地圖查詢">
+    <meta property="og:description" content="免費查詢全台 22 間法院法拍屋、法拍土地、法拍物件。每週自動更新，支援多條件篩選。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ai-cooperation.github.io/foreclosure-map/">
+    <meta property="og:image" content="https://ai-cooperation.github.io/foreclosure-map/images/foreclosure_1_hero_map.jpg">
+    <meta property="og:locale" content="zh_TW">
+    <meta property="og:site_name" content="法拍地圖">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="法拍地圖 — 全台法拍物件即時地圖查詢">
+    <meta name="twitter:description" content="免費查詢全台法拍屋、法拍土地，地圖即時標示，每週更新。">
+    <meta name="twitter:image" content="https://ai-cooperation.github.io/foreclosure-map/images/foreclosure_1_hero_map.jpg">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "法拍地圖",
+        "alternateName": ["法拍物件地圖", "台灣法拍地圖", "法拍屋地圖"],
+        "description": "全台 22 間法院法拍屋、法拍土地即時地圖查詢。每週自動更新，免費使用，支援篩選法院、縣市、拍別、底價範圍。",
+        "url": "https://ai-cooperation.github.io/foreclosure-map/",
+        "applicationCategory": "RealEstateApplication",
+        "operatingSystem": "Web",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "TWD"
+        },
+        "author": {
+            "@type": "Organization",
+            "name": "AI Cooperation"
+        },
+        "about": {
+            "@type": "Thing",
+            "name": "台灣法院拍賣不動產",
+            "description": "台灣各地方法院法拍屋、法拍土地物件資訊，包含房屋與土地的拍賣公告、底價、座標位置"
+        },
+        "keywords": "法拍地圖,法拍屋,法拍物件,法拍土地,法拍查詢,法拍地土,法院拍賣,不動產拍賣"
+    }
+    </script>
+
+    <!-- FAQ Structured Data for AI -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "法拍地圖是什麼？",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "法拍地圖是一個免費的線上工具，將全台 22 間法院的法拍屋、法拍土地物件標示在互動式地圖上，讓使用者可以直覺地查看法拍物件的地理位置、底價、拍別等資訊。"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "法拍地圖的資料多久更新一次？",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "每週二自動更新。系統會自動從司法院法拍公告網站擷取最新資料，經過地理編碼後標示在地圖上。"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "法拍地圖涵蓋哪些法院？",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "涵蓋全台 22 間地方法院，包含台北、新北、桃園、台中、台南、高雄等所有地方法院的法拍物件。"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "如何在法拍地圖上搜尋法拍屋？",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "進入法拍地圖後，可透過左側篩選面板，依物件類型（房屋/土地）、法院、縣市、拍別（1拍~5拍以上）、點交狀態、權利範圍、底價範圍等條件進行篩選。"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "法拍地圖收費嗎？",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "完全免費。法拍地圖是開源專案，所有功能均可免費使用，不需註冊、不需付費。"
+                }
+            }
+        ]
+    }
+    </script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+            color: #1a1a2e;
+            background: #ffffff;
+            line-height: 1.6;
+        }
+        a { color: #2563eb; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        /* Hero */
+        .hero {
+            position: relative;
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%);
+            overflow: hidden;
+            padding: 2rem;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('images/foreclosure_1_hero_map.jpg') center/cover no-repeat;
+            opacity: 0.15;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            max-width: 800px;
+        }
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            color: #ffffff;
+            margin-bottom: 1rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+        .hero h1 span {
+            background: linear-gradient(90deg, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero p {
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+            color: #cbd5e1;
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+        .hero-stats {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2.5rem;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #60a5fa;
+            display: block;
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .cta-btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 12px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+        }
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(37,99,235,0.4);
+            text-decoration: none;
+        }
+
+        /* Sections */
+        section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .section-subtitle {
+            text-align: center;
+            color: #64748b;
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Features */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        .feature-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 2rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+        }
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .feature-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+        .feature-card p {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        /* Gallery */
+        .gallery {
+            background: #f1f5f9;
+        }
+        .gallery-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 5rem 2rem;
+        }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        .gallery-item {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .gallery-item:hover {
+            transform: scale(1.02);
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+        }
+        .gallery-item .caption {
+            padding: 1rem 1.25rem;
+            background: #fff;
+        }
+        .gallery-item .caption h4 {
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
+        }
+        .gallery-item .caption p {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        /* How it works */
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2rem;
+            counter-reset: step;
+        }
+        .step {
+            text-align: center;
+            position: relative;
+        }
+        .step::before {
+            counter-increment: step;
+            content: counter(step);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 3rem;
+            height: 3rem;
+            background: #2563eb;
+            color: #fff;
+            font-size: 1.4rem;
+            font-weight: 700;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+        }
+        .step h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        .step p {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        /* CTA bottom */
+        .cta-section {
+            text-align: center;
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, #0f172a, #1e3a5f);
+            color: #fff;
+        }
+        .cta-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        .cta-section p {
+            color: #94a3b8;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #94a3b8;
+            font-size: 0.85rem;
+            background: #0f172a;
+        }
+        footer a { color: #60a5fa; }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .hero { min-height: 80vh; }
+            .hero-stats { gap: 1.5rem; }
+            .stat-number { font-size: 2rem; }
+        }
+    </style>
 </head>
 <body>
-    <div id="sidebar">
-        <h1>法拍物件地圖</h1>
-        <div id="meta-info"></div>
 
-        <div class="filter-group">
-            <label>物件類型</label>
-            <select id="filter-type">
-                <option value="">全部</option>
-                <option value="building">房屋</option>
-                <option value="land">土地</option>
-            </select>
-        </div>
-
-        <div class="filter-group">
-            <label>法院</label>
-            <select id="filter-court">
-                <option value="">全部</option>
-            </select>
-        </div>
-
-        <div class="filter-group">
-            <label>縣市</label>
-            <select id="filter-county">
-                <option value="">全部</option>
-            </select>
-        </div>
-
-        <div class="filter-group">
-            <label>拍別</label>
-            <select id="filter-round">
-                <option value="">全部</option>
-                <option value="1">1拍</option>
-                <option value="2">2拍</option>
-                <option value="3">3拍</option>
-                <option value="4">4拍</option>
-                <option value="5+">5拍以上</option>
-            </select>
-        </div>
-
-        <div class="filter-group">
-            <label>點交</label>
-            <select id="filter-delivery">
-                <option value="">全部</option>
-                <option value="yes">點交</option>
-                <option value="no">不點交</option>
-            </select>
-        </div>
-
-        <div class="filter-group">
-            <label>權利範圍</label>
-            <select id="filter-rrange">
-                <option value="">全部</option>
-                <option value="full">全部持分 (1/1)</option>
-                <option value="partial">部分持分</option>
-            </select>
-        </div>
-
-        <div class="filter-group">
-            <label>底價範圍 (萬元)</label>
-            <div class="price-range">
-                <input type="number" id="filter-price-min" placeholder="最低" min="0">
-                <span>~</span>
-                <input type="number" id="filter-price-max" placeholder="最高" min="0">
+<!-- Hero Section -->
+<header class="hero">
+    <div class="hero-content">
+        <h1>全台<span>法拍地圖</span></h1>
+        <p>涵蓋 22 間法院、近萬筆法拍物件，每週自動更新。<br>法拍屋、法拍土地一目了然，免費查詢。</p>
+        <div class="hero-stats">
+            <div class="stat-item">
+                <span class="stat-number">7,995</span>
+                <span class="stat-label">本週物件數</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">22</span>
+                <span class="stat-label">涵蓋法院</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">22</span>
+                <span class="stat-label">涵蓋縣市</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">100%</span>
+                <span class="stat-label">免費使用</span>
             </div>
         </div>
-
-        <button id="btn-filter" onclick="applyFilters()">篩選</button>
-        <button id="btn-reset" onclick="resetFilters()">清除</button>
-
-        <div id="stats"></div>
+        <a href="map.html" class="cta-btn">開啟法拍地圖</a>
     </div>
+</header>
 
-    <div id="sidebar-toggle" onclick="toggleSidebar()">&#9776;</div>
-    <div id="map"></div>
+<!-- Features -->
+<section>
+    <h2 class="section-title">為什麼選擇法拍地圖？</h2>
+    <p class="section-subtitle">不需要付費、不需要註冊，打開瀏覽器就能查詢全台法拍物件。</p>
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">&#x1F5FA;</div>
+            <h3>互動式地圖</h3>
+            <p>所有法拍物件標示在地圖上，支援縮放、聚合顯示、點擊查看詳情。比傳統表格式清單更直覺。</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">&#x1F504;</div>
+            <h3>每週自動更新</h3>
+            <p>每週二從司法院法拍公告自動擷取最新資料，經過地理編碼後即時上線，不漏接任何法拍物件。</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">&#x1F50D;</div>
+            <h3>多條件篩選</h3>
+            <p>依物件類型、法院、縣市、拍別、點交狀態、權利範圍、底價等多種條件精準篩選。</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">&#x1F3E0;</div>
+            <h3>房屋 + 土地</h3>
+            <p>同時收錄法拍屋（房屋）與法拍地土（土地）物件，紅色標記房屋、綠色標記土地，一眼區分。</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">&#x1F4B0;</div>
+            <h3>底價範圍篩選</h3>
+            <p>設定最低與最高底價，快速找到預算內的法拍物件。從數萬元土地到數千萬元豪宅，一應俱全。</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">&#x1F4C4;</div>
+            <h3>直連法院公告</h3>
+            <p>每筆物件都附有法院公告 PDF 連結，點擊即可查看完整的法拍公告文件。</p>
+        </div>
+    </div>
+</section>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
-    <script src="js/app.js"></script>
+<!-- Gallery -->
+<div class="gallery">
+    <div class="gallery-inner">
+        <h2 class="section-title">一覽法拍地圖</h2>
+        <p class="section-subtitle">法拍屋與法拍土地資訊，在地圖上一目了然。</p>
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <img src="images/foreclosure_1_hero_map.jpg" alt="法拍地圖全台鳥瞰 — 顯示全台法拍物件分布" loading="lazy">
+                <div class="caption">
+                    <h4>全台法拍物件分布</h4>
+                    <p>近萬筆法拍屋、法拍土地即時標示在互動式地圖上。</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/foreclosure_2_before_after.jpg" alt="法拍查詢效率對比 — 從翻閱紙本到一鍵查詢" loading="lazy">
+                <div class="caption">
+                    <h4>告別傳統查詢方式</h4>
+                    <p>不用再翻閱法院公告紙本，打開地圖就能精準定位。</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/foreclosure_3_data_viz.jpg" alt="法拍物件數據統計 — 22法院、近萬筆物件" loading="lazy">
+                <div class="caption">
+                    <h4>即時數據統計</h4>
+                    <p>22 間法院、每週近萬筆物件，資料量完整。</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/foreclosure_4_lifestyle.jpg" alt="用法拍地圖規劃未來 — 在地圖上探索理想物件" loading="lazy">
+                <div class="caption">
+                    <h4>探索你的理想物件</h4>
+                    <p>從任何裝置查詢，隨時隨地掌握法拍資訊。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- How it works -->
+<section>
+    <h2 class="section-title">如何使用？</h2>
+    <p class="section-subtitle">三步驟開始查詢法拍物件。</p>
+    <div class="steps">
+        <div class="step">
+            <h3>開啟地圖</h3>
+            <p>點擊「開啟法拍地圖」進入互動式地圖，全台法拍物件一覽無遺。</p>
+        </div>
+        <div class="step">
+            <h3>設定篩選條件</h3>
+            <p>在左側面板選擇物件類型、法院、縣市、拍別、底價範圍等條件。</p>
+        </div>
+        <div class="step">
+            <h3>點擊查看詳情</h3>
+            <p>點擊地圖上的標記，查看物件資訊並直接連結到法院公告 PDF。</p>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-section">
+    <h2>開始查詢法拍物件</h2>
+    <p>全台法拍屋、法拍土地，每週更新、完全免費。</p>
+    <a href="map.html" class="cta-btn">開啟法拍地圖</a>
+</div>
+
+<!-- Footer -->
+<footer>
+    <p>法拍地圖 &copy; 2026 <a href="https://github.com/ai-cooperation">AI Cooperation</a> &mdash; 資料來源：司法院法拍公告 &mdash; <a href="https://github.com/ai-cooperation/foreclosure-map">GitHub</a></p>
+</footer>
+
 </body>
 </html>

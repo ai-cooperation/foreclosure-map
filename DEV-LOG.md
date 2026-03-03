@@ -83,3 +83,33 @@ MacBook Claude Code CLI → acmacmini2 SSH
 2. API 已回傳部分物件座標 (judicial_api source)
 3. twland API 只有 2015 年前地籍圖，新段名需另外處理
 4. Playwright 在 acmacmini2 (7.6GB RAM) 上運行順暢
+
+## 2026-02-11 Phase 3 + 4 完成
+
+### Phase 3: 全台爬取
+- 修復翻頁 bug: `ht.totalCount` → `pageInfo.totalNum`
+- 修復 response filter: URL 精確匹配 `/QUERY.htm`
+- 全台 22 法院爬取成功: **8,298 筆** (土地 6,367 + 房屋 1,931)
+- Geocode: **5,047/8,298** (60.8%) 有座標
+  - 土地: 5,047/6,367 (79.3%) via twland
+  - 房屋: 0/1,931 (TGOS key 待設定)
+- current.json 14MB, 5,047 筆地圖物件
+
+### Phase 4: 自動化
+- run.sh 自動化腳本 (scrape → geocode → build → push → notify)
+- cron job: 每週一 06:00 `0 6 * * 1`
+- email 通知腳本 notify.py 已寫好
+- SMTP 待設定 (需 Gmail 應用程式密碼)
+
+### 各法院物件數
+```
+TPD 290  PCD 320  SLD 317  TYD 459  SCD 710  MLD 318
+TCD 694  NTD 160  CHD 406  ULD 273  CYD 687  TND 870
+CTD 356  KSD 277  PTD 456  TTD 199  HLD 354  ILD 349
+KLD 518  PHD 236  KMD 45   LCD 4
+```
+
+### 待完成
+- SMTP_USER / SMTP_PASS 設定 (Gmail 應用程式密碼)
+- TGOS API Key → geocode.py 房屋座標
+- twland 失敗 fallback (easymap)

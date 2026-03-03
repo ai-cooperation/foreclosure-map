@@ -2,8 +2,10 @@
 """
 法拍地圖更新通知 — Email 發送
 讀取 notify-emails.txt 清單，發送更新通知 + 網站連結
+支援 --status ok/error 和 --error-message 參數，用於失敗通知
 """
 
+import argparse
 import json
 import smtplib
 import sys
@@ -59,21 +61,13 @@ def send_email(smtp_host, smtp_port, smtp_user, smtp_pass, to_list, subject, bod
     print(f"已發送通知至 {len(to_list)} 個 email")
 
 
-def main():
-    import os
-
-    emails = load_emails()
-    if not emails:
-        print("[WARN] 無通知對象")
-        return
-
-    stats = load_stats()
+def build_success_email(stats):
+    """產生成功通知的主旨和內容"""
     week = stats.get("week", datetime.now().strftime("%Y-W%W"))
     total = stats.get("total_count", 0)
     type_counts = stats.get("type_counts", {})
     courts = stats.get("courts_scraped", 0)
     geocoded = stats.get("geocode_success", stats.get("pre_geocoded", 0))
-
     land_count = stats.get("land_count", type_counts.get("land", 0))
     building_count = stats.get("building_count", type_counts.get("building", 0))
 
@@ -81,7 +75,7 @@ def main():
 
     body_html = f"""
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>法拍物件地圖 — 本週更新</h2>
+        <h2 style="color: #16a34a;">✅ 法拍物件地圖 — 本週更新</h2>
         <table style="border-collapse: collapse; width: 100%;">
             <tr><td style="padding: 8px; border-bottom: 1px solid #eee;"><b>週次</b></td><td style="padding: 8px; border-bottom: 1px solid #eee;">{week}</td></tr>
             <tr><td style="padding: 8px; border-bottom: 1px solid #eee;"><b>物件總數</b></td><td style="padding: 8px; border-bottom: 1px solid #eee;">{total} 筆</td></tr>
@@ -101,6 +95,61 @@ def main():
         </p>
     </div>
     """
+    return subject, body_html
+
+
+def build_error_email(stats, error_message):
+    """產生失敗通知的主旨和內容"""
+    week = stats.get("week", datetime.now().strftime("%Y-W%W"))
+
+    subject = f"⚠️ 法拍物件地圖更新失敗 {week}"
+
+    body_html = f"""
+    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #dc2626;">❌ 法拍物件地圖 — 更新失敗</h2>
+        <table style="border-collapse: collapse; width: 100%;">
+            <tr><td style="padding: 8px; border-bottom: 1px solid #eee;"><b>週次</b></td><td style="padding: 8px; border-bottom: 1px solid #eee;">{week}</td></tr>
+            <tr><td style="padding: 8px; border-bottom: 1px solid #eee;"><b>錯誤訊息</b></td><td style="padding: 8px; border-bottom: 1px solid #eee; color: #dc2626;">{error_message}</td></tr>
+        </table>
+        <p style="margin-top: 16px; padding: 12px; background: #fef2f2; border-left: 4px solid #dc2626; border-radius: 4px;">
+            本週自動更新未完成，網站資料維持上期。<br>
+            請檢查伺服器日誌：<code>/tmp/foreclosure-map-{week}.log</code>
+        </p>
+        <p style="margin-top: 20px;">
+            <a href="{SITE_URL}" style="display: inline-block; padding: 12px 24px; background: #6b7280; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">
+                查看法拍地圖（上期資料）
+            </a>
+        </p>
+        <p style="color: #888; font-size: 12px; margin-top: 20px;">
+            更新時間: {datetime.now().strftime("%Y-%m-%d %H:%M")}<br>
+            如需取消通知，請從 notify-emails.txt 移除您的 email。
+        </p>
+    </div>
+    """
+    return subject, body_html
+
+
+def main():
+    import os
+
+    parser = argparse.ArgumentParser(description="法拍地圖更新通知")
+    parser.add_argument("--status", choices=["ok", "error"], default="ok",
+                        help="Pipeline 執行狀態 (ok=成功, error=失敗)")
+    parser.add_argument("--error-message", default="",
+                        help="失敗時的錯誤訊息")
+    args = parser.parse_args()
+
+    emails = load_emails()
+    if not emails:
+        print("[WARN] 無通知對象")
+        return
+
+    stats = load_stats()
+
+    if args.status == "error":
+        subject, body_html = build_error_email(stats, args.error_message or "未知錯誤")
+    else:
+        subject, body_html = build_success_email(stats)
 
     # SMTP 設定 (從環境變數讀取)
     smtp_host = os.environ.get("SMTP_HOST", "smtp.gmail.com")
@@ -115,8 +164,10 @@ def main():
         print(f"  (Gmail 需使用應用程式密碼: https://myaccount.google.com/apppasswords)")
         print(f"\n預覽通知內容:")
         print(f"  收件人: {', '.join(emails)}")
+        print(f"  狀態: {args.status}")
         print(f"  主旨: {subject}")
-        print(f"  物件: {total} 筆 (土地 {land_count} / 房屋 {building_count})")
+        if args.status == "error":
+            print(f"  錯誤: {args.error_message}")
         print(f"  連結: {SITE_URL}")
         return
 
