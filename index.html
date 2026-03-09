@@ -248,6 +248,71 @@
             font-size: 0.95rem;
         }
 
+        /* Video */
+        .video-section {
+            padding: 4rem 2rem;
+            background: #ffffff;
+            text-align: center;
+        }
+        .video-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+            position: relative;
+            cursor: pointer;
+            aspect-ratio: 16/9;
+        }
+        .video-wrapper video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .video-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(15,23,42,0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            transition: opacity 0.4s;
+        }
+        .video-wrapper.playing .video-overlay {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .play-btn {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        .video-wrapper:hover .play-btn {
+            border-color: rgba(255,255,255,0.5);
+            transform: scale(1.05);
+        }
+        .play-btn::after {
+            content: '';
+            width: 0; height: 0;
+            border-style: solid;
+            border-width: 13px 0 13px 21px;
+            border-color: transparent transparent transparent rgba(255,255,255,0.6);
+            margin-left: 4px;
+        }
+        .video-label {
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
         /* Gallery */
         .gallery {
             background: #f1f5f9;
@@ -427,6 +492,21 @@
     </div>
 </section>
 
+<!-- Promo Video -->
+<div class="video-section">
+    <h2 class="section-title">一分鐘認識法拍地圖</h2>
+    <p class="section-subtitle">看看法拍地圖如何幫你找到理想的法拍物件</p>
+    <div class="video-wrapper" id="promo-video" onclick="togglePromo()">
+        <video poster="images/foreclosure_1_hero_map.jpg" preload="metadata" playsinline muted>
+            <source src="videos/promo-preview.mp4" type="video/mp4">
+        </video>
+        <div class="video-overlay" id="promo-overlay">
+            <div class="play-btn"></div>
+            <div class="video-label">觀看介紹影片</div>
+        </div>
+    </div>
+</div>
+
 <!-- Gallery -->
 <div class="gallery">
     <div class="gallery-inner">
@@ -497,5 +577,22 @@
     <p>法拍地圖 &copy; 2026 <a href="https://github.com/ai-cooperation">AI Cooperation</a> &mdash; 資料來源：司法院法拍公告 &mdash; <a href="https://github.com/ai-cooperation/foreclosure-map">GitHub</a></p>
 </footer>
 
+<script>
+function togglePromo(){
+  var wrap=document.getElementById('promo-video');
+  var vid=wrap.querySelector('video');
+  if(vid.paused){
+    vid.muted=false;vid.play();wrap.classList.add('playing');
+  }else{
+    vid.pause();wrap.classList.remove('playing');
+  }
+}
+document.querySelector('#promo-video video').addEventListener('ended',function(){
+  document.getElementById('promo-video').classList.remove('playing');
+});
+document.querySelector('#promo-video video').addEventListener('click',function(){
+  this.pause();document.getElementById('promo-video').classList.remove('playing');
+});
+</script>
 </body>
 </html>
