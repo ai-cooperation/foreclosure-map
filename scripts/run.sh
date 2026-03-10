@@ -128,8 +128,8 @@ git diff --cached --quiet && { log "無變更，跳過 commit"; } || {
     git commit -m "weekly update ${WEEK}
 
 Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
-    git pull --rebase origin main 2>&1 | tee -a "$LOG"
-    git push origin main 2>&1 | tee -a "$LOG"
+    timeout 120 git pull --rebase --autostash origin main 2>&1 | tee -a "$LOG"
+    timeout 600 git push origin main 2>&1 | tee -a "$LOG"
 }
 
 # Step 5: Email 通知 — 由 on_exit trap 處理，此處設定成功狀態
