@@ -140,6 +140,7 @@ TOTAL=$(python3 -c "import json; print(json.load(open('data/current.json'))['met
 GEOCODED=$(python3 -c "import json; print(json.load(open('data/current.json'))['meta'].get('geocode_success', '?'))" 2>/dev/null || echo "?")
 
 write_status "ok" "更新完成"
+/usr/local/bin/heartbeat.sh foreclosure-map ok || true
 
 FAIL_MSG=""
 if [ "$FAILED_COURTS" != "none" ] && [ "$FAILED_COURTS" != "?" ]; then
