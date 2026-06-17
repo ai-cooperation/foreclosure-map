@@ -1,6 +1,6 @@
 #!/bin/bash
 # 法拍物件地圖 — 每週自動更新腳本
-# cron: 0 6 * * 1 (每週一 06:00)
+# cron: 0 10 * * 2 (每週二 10:00)
 set -euo pipefail
 
 cd /home/ac-macmini2/foreclosure-map
