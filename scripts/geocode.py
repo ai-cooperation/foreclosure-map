@@ -29,6 +29,100 @@ ADDRESS_CACHE_FILE = CACHE_DIR / "address_cache.json"
 TWLAND_API = "https://twland.ronny.tw/index/search"
 NLSC_API = "https://api.nlsc.gov.tw/MapSearch/QuerySearch"
 
+# 縣市邊界框 (min_lng, min_lat, max_lng, max_lat) — 用於驗證地理編碼落點是否在宣告縣市內。
+# 目的: fail-closed 擋掉跨縣市模糊比對錯置 (例: 屏東地址被 NLSC 配到新竹竹北泰和路)。
+# 範圍取寬鬆邊界 (含山區/離島),只攔多度數級別的明顯錯置,不誤殺縣界附近的合法點。
+COUNTY_BBOX = {
+    "臺北市": (121.45, 24.95, 121.67, 25.21),
+    "新北市": (121.27, 24.67, 122.01, 25.30),
+    "基隆市": (121.65, 25.07, 121.82, 25.20),
+    "桃園市": (120.96, 24.59, 121.46, 25.12),
+    "新竹縣": (120.92, 24.40, 121.43, 24.90),
+    "新竹市": (120.85, 24.74, 121.03, 24.86),
+    "苗栗縣": (120.66, 24.30, 121.27, 24.70),
+    "臺中市": (120.43, 23.99, 121.46, 24.43),
+    "彰化縣": (120.30, 23.80, 120.75, 24.18),
+    "南投縣": (120.55, 23.45, 121.45, 24.22),
+    "雲林縣": (120.10, 23.50, 120.70, 23.86),
+    "嘉義縣": (120.10, 23.20, 120.95, 23.65),
+    "嘉義市": (120.40, 23.44, 120.50, 23.52),
+    "臺南市": (120.02, 22.88, 120.66, 23.43),
+    "高雄市": (120.13, 22.46, 121.06, 23.47),
+    "屏東縣": (120.32, 21.90, 120.90, 22.95),
+    "宜蘭縣": (121.30, 24.30, 122.00, 24.99),
+    "花蓮縣": (121.06, 23.10, 121.70, 24.38),
+    "臺東縣": (120.70, 21.90, 121.70, 23.40),
+    "澎湖縣": (119.30, 23.18, 119.74, 23.80),
+    "金門縣": (118.14, 24.38, 118.55, 24.56),
+    "連江縣": (119.88, 25.93, 120.51, 26.40),
+}
+
+# 邊界框緩衝 (度) — 吸收縣界地段/門牌的座標精度誤差,避免誤殺縣界附近的合法點。
+# 校準依據: 對 live 資料實測,合法的縣界地段 (新豐鄉/竹南/苑裡等) 出界 < 0.05deg,
+# 真錯置 (跨區模糊比對) 出界 >= 0.20deg,兩者間有明顯空隙,0.1deg 可乾淨分離。
+COUNTY_MARGIN_DEG = 0.1
+
+
+def _normalize_county(county):
+    """正規化縣市名 (台/臺 統一為臺),供 COUNTY_BBOX 查表"""
+    if not county:
+        return ""
+    return county.strip().replace("台", "臺")
+
+
+def in_county(lat, lng, county):
+    """
+    驗證座標是否落在宣告縣市的邊界框內。
+    回傳 True 表示通過 (或縣市未知無法驗證時放行,不誤殺);
+    回傳 False 表示明顯落在別的縣市,應拒絕。
+    """
+    bbox = COUNTY_BBOX.get(_normalize_county(county))
+    if bbox is None:
+        return True  # 未知縣市無法驗證,放行
+    try:
+        lat_f = float(lat)
+        lng_f = float(lng)
+    except (TypeError, ValueError):
+        return False
+    min_lng, min_lat, max_lng, max_lat = bbox
+    m = COUNTY_MARGIN_DEG
+    return (min_lng - m <= lng_f <= max_lng + m) and (min_lat - m <= lat_f <= max_lat + m)
+
+
+def county_center(county):
+    """回傳縣市中心點 (lng, lat) 供 NLSC 查詢偏好,未知縣市回傳 None"""
+    bbox = COUNTY_BBOX.get(_normalize_county(county))
+    if bbox is None:
+        return None
+    min_lng, min_lat, max_lng, max_lat = bbox
+    return ((min_lng + max_lng) / 2, (min_lat + max_lat) / 2)
+
+
+def _parse_nlsc_location(item):
+    """從 NLSC ITEM 解析 (lat, lng),無效回傳 None"""
+    location_el = item.find("LOCATION")
+    if location_el is None or not location_el.text:
+        return None
+    try:
+        lon, lat = location_el.text.split(",")
+        lat_f = float(lat)
+        lng_f = float(lon)
+    except (ValueError, AttributeError):
+        return None
+    if lat_f <= 0 or lng_f <= 0:
+        return None
+    return lat_f, lng_f
+
+
+def _cache_and_return(address_cache, cache_key, lat_f, lng_f):
+    """寫入地址快取並回傳結果"""
+    address_cache[cache_key] = {
+        "lat": lat_f,
+        "lng": lng_f,
+        "cached_at": datetime.now().isoformat(),
+    }
+    return {"lat": lat_f, "lng": lng_f, "source": "nlsc"}
+
 
 def load_cache(cache_file):
     """載入快取"""
@@ -114,26 +208,32 @@ def geocode_land(county, district, section, number, land_cache):
     return None
 
 
-def geocode_address_nlsc(address, address_cache):
+def geocode_address_nlsc(address, address_cache, county=""):
     """
     地址 → 座標 (NLSC 國土測繪中心, 免費免 key, 門牌等級)
+    county: 宣告縣市,用於 (1) 查詢中心點偏好 (2) 落點驗證,過濾跨縣市模糊比對。
     回傳: {lat, lng, source} 或 None
     """
     cache_key = address
 
-    # 檢查快取
+    # 檢查快取 — 須通過縣市驗證才採用。
+    # 自我修復: 舊版留下的跨縣市錯置快取 (例: 屏東地址被配到竹北) 會被視為未命中而重查。
     if cache_key in address_cache:
         cached = address_cache[cache_key]
-        return {
-            "lat": cached["lat"],
-            "lng": cached["lng"],
-            "source": "nlsc_cache",
-        }
+        if in_county(cached["lat"], cached["lng"], county):
+            return {
+                "lat": cached["lat"],
+                "lng": cached["lng"],
+                "source": "nlsc_cache",
+            }
+        print(f"    [FIX] 快取錯置重查 ({address}): 舊座標不在 {county}")
 
     try:
         # 雙重 URL encode (NLSC API 要求)
         encoded = urllib.parse.quote(urllib.parse.quote(address))
-        data = f"word={encoded}&feedback=XML&center=121.000000,24.000000"
+        # 查詢中心點用宣告縣市中心,避免模糊比對被寫死的預設中心 (北部) 拉偏
+        center = county_center(county) or (121.0, 24.0)
+        data = f"word={encoded}&feedback=XML&center={center[0]:.6f},{center[1]:.6f}"
 
         req = urllib.request.Request(
             NLSC_API,
@@ -148,64 +248,35 @@ def geocode_address_nlsc(address, address_cache):
             xml_str = resp.read().decode("utf-8")
 
         root = ET.fromstring(xml_str)
+
+        # 第一輪: 只取門牌結果 (最精確),且須落在宣告縣市內
         for item in root.findall("ITEM"):
             remark_el = item.find("REMARK")
             remark = remark_el.text if remark_el is not None else ""
-
-            # 只取門牌結果 (最精確)
             if "門牌" not in remark:
                 continue
 
-            location = item.find("LOCATION").text
-            lon, lat = location.split(",")
-            lat_f = float(lat)
-            lng_f = float(lon)
-
-            if lat_f <= 0 or lng_f <= 0:
+            coords = _parse_nlsc_location(item)
+            if coords is None:
+                continue
+            lat_f, lng_f = coords
+            if not in_county(lat_f, lng_f, county):
                 continue
 
-            result = {
-                "lat": lat_f,
-                "lng": lng_f,
-                "source": "nlsc",
-            }
+            return _cache_and_return(address_cache, cache_key, lat_f, lng_f)
 
-            # 寫入快取
-            address_cache[cache_key] = {
-                "lat": result["lat"],
-                "lng": result["lng"],
-                "cached_at": datetime.now().isoformat(),
-            }
-
-            return result
-
-        # 如果沒有門牌結果，接受任何有座標的結果
-        root = ET.fromstring(xml_str)
+        # 第二輪 fallback: 接受任何有座標的結果,但仍須通過縣市驗證閘。
+        # 這裡是錯置的主因 — 沒門牌時 NLSC 會回傳同名道路的模糊比對 (泰和路@竹北),
+        # 縣市閘確保只收落在宣告縣市內的結果,寧可查無也不錯置。
         for item in root.findall("ITEM"):
-            location_el = item.find("LOCATION")
-            if location_el is None or not location_el.text:
+            coords = _parse_nlsc_location(item)
+            if coords is None:
                 continue
-            location = location_el.text
-            lon, lat = location.split(",")
-            lat_f = float(lat)
-            lng_f = float(lon)
-
-            if lat_f <= 0 or lng_f <= 0:
+            lat_f, lng_f = coords
+            if not in_county(lat_f, lng_f, county):
                 continue
 
-            result = {
-                "lat": lat_f,
-                "lng": lng_f,
-                "source": "nlsc",
-            }
-
-            address_cache[cache_key] = {
-                "lat": result["lat"],
-                "lng": result["lng"],
-                "cached_at": datetime.now().isoformat(),
-            }
-
-            return result
+            return _cache_and_return(address_cache, cache_key, lat_f, lng_f)
 
     except Exception as e:
         print(f"    [WARN] NLSC 查詢失敗 ({address}): {e}")
@@ -220,11 +291,11 @@ def geocode_item(item, land_cache, address_cache):
         return item
 
     item_type = item.get("type", "unknown")
+    county = item.get("county", "")
     result = None
 
     if item_type == "land" and item.get("land_section") and item.get("land_no"):
         # 土地: 地號 → twland API
-        county = item.get("county", "")
         district = item.get("district", "")
         section = item["land_section"]
         number = item["land_no"]
@@ -233,13 +304,21 @@ def geocode_item(item, land_cache, address_cache):
 
     elif item_type == "building" and item.get("address"):
         # 房屋: 地址 → NLSC (免費免 key)
-        address = item["address"]
-        result = geocode_address_nlsc(address, address_cache)
+        result = geocode_address_nlsc(item["address"], address_cache, county)
 
     elif item.get("location"):
         # 嘗試從 location 直接做地址查詢
-        location = item["location"]
-        result = geocode_address_nlsc(location, address_cache)
+        result = geocode_address_nlsc(item["location"], address_cache, county)
+
+    # Fail-closed 縣市驗證閘 — 涵蓋所有來源 (twland / nlsc / 快取)。
+    # 落點不在宣告縣市 → 視為失敗,寧可不顯示也不錯置到別的縣市。
+    if result and not in_county(result.get("lat"), result.get("lng"), county):
+        print(
+            f"    [REJECT] 落點不在 {county} "
+            f"({result.get('lat')},{result.get('lng')}): "
+            f"{item.get('location') or item.get('address')}"
+        )
+        result = None
 
     if result:
         item["coordinates"] = result
